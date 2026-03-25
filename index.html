@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RingReply</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <img src="logo.png" class="nav-logo" />
+
+    <div class="nav-buttons">
+      <button class="secondary" onclick="scrollToSetup()">View Setup</button>
+      <button class="primary" onclick="addCall()">Add Demo Call</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <h1>Never lose a customer from a missed call.</h1>
+      <p>Automatically reply to missed calls with a text message and capture more jobs.</p>
+    </div>
+
+    <div class="hero-card">
+      <p>Starter Plan</p>
+      <h2>£7/month</h2>
+      <button class="primary">Start Free Trial</button>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="card stat-card">
+      <span>Missed Calls</span>
+      <strong id="callCount">0</strong>
+    </div>
+
+    <div class="card stat-card">
+      <span>Setup Option</span>
+      <strong id="setupDisplay">Get New Number</strong>
+    </div>
+  </div>
+
+  <!-- SETUP -->
+  <section id="setupSection" class="grid">
+    <div class="card">
+      <h2>Business Details</h2>
+
+      <label>Business Name</label>
+      <input id="businessName" placeholder="Business Name">
+
+      <label>Phone Number</label>
+      <input id="phoneNumber" placeholder="Phone Number">
+
+      <label>Setup Option</label>
+      <select id="setupOption">
+        <option>Get New Number</option>
+        <option>Use Existing Number</option>
+      </select>
+
+      <button onclick="saveDetails()">Save Details</button>
+    </div>
+
+    <div class="card">
+      <h2>SMS Auto Reply Message</h2>
+
+      <label>Message</label>
+      <textarea id="smsMessage">
+Hi, sorry we missed your call. Please reply with your name, postcode and job details and we’ll call back shortly.
+      </textarea>
+
+      <button onclick="saveMessage()">Save Message</button>
+    </div>
+  </section>
+
+  <!-- CALLS -->
+  <section class="card">
+    <h2>Missed Calls</h2>
+    <button onclick="clearCalls()">Clear</button>
+    <ul id="callList"></ul>
+  </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
