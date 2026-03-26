@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const twilio = require('twilio');
 const { createClient } = require('@supabase/supabase-js');
@@ -8,13 +10,8 @@ const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-
-if (!accountSid || !authToken) {
-  throw new Error('Missing Twilio environment variables.');
-}
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables.');
+if (!accountSid || !authToken || !supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Missing environment variables");
 }
 
 const client = twilio(accountSid, authToken);
@@ -24,6 +21,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
 
+function cleanNumber(number) {
+  if (!number) return '';
+  return String(number).replace(/\s+/g, '');
+}
+
 function normaliseBusiness(row) {
   return {
     id: row.id,
@@ -32,11 +34,6 @@ function normaliseBusiness(row) {
     autoReplyMessage: row.auto_reply_message,
     createdAt: row.created_at
   };
-}
-
-function cleanNumber(number) {
-  if (!number) return '';
-  return String(number).replace(/\s+/g, '');
 }
 
 async function getBusinesses() {
@@ -256,10 +253,6 @@ app.get('/', async (req, res) => {
           box-shadow: 0 10px 24px rgba(79, 70, 229, 0.28);
         }
 
-        .primary:hover {
-          box-shadow: 0 14px 28px rgba(79, 70, 229, 0.35);
-        }
-
         .secondary {
           background: transparent;
           color: #1e293b;
@@ -291,12 +284,6 @@ app.get('/', async (req, res) => {
           margin-top: 16px;
           background: white;
           box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
-          transition: all 0.2s ease;
-        }
-
-        .business-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 16px 28px rgba(15, 23, 42, 0.08);
         }
 
         .card-header {
@@ -385,10 +372,6 @@ app.get('/', async (req, res) => {
           text-align: center;
           padding: 34px;
           color: #64748b;
-        }
-
-        .empty span {
-          font-size: 13px;
         }
 
         @media (max-width: 700px) {
@@ -621,6 +604,14 @@ app.post('/delete-business/:id', async (req, res) => {
   }
 
   res.send('Business deleted successfully');
+});
+
+app.post('/sms', (req, res) => {
+  const twiml = new twilio.twiml.MessagingResponse();
+  twiml.message('Thanks for messaging RingReply!');
+
+  res.type('text/xml');
+  res.send(twiml.toString());
 });
 
 app.post('/voice', async (req, res) => {
