@@ -1,34 +1,103 @@
 const express = require('express');
-const app = express();
 const twilio = require('twilio');
-const fs = require('fs-extra');
-const path = require('path');
+const { createClient } = require('@supabase/supabase-js');
+
+const app = express();
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
+
+if (!accountSid || !authToken) {
+  throw new Error('Missing Twilio environment variables.');
+}
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing Supabase environment variables.');
+}
 
 const client = twilio(accountSid, authToken);
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
 
-const DATA_FILE = path.join(__dirname, 'businesses.json');
+function normaliseBusiness(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    twilioNumber: row.twilio_number,
+    autoReplyMessage: row.auto_reply_message,
+    createdAt: row.created_at
+  };
+}
 
-function loadBusinesses() {
-  if (fs.existsSync(DATA_FILE)) {
-    return fs.readJsonSync(DATA_FILE);
+function cleanNumber(number) {
+  if (!number) return '';
+  return String(number).replace(/\s+/g, '');
+}
+
+async function getBusinesses() {
+  const { data, error } = await supabase
+    .from('businesses')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('getBusinesses error:', error.message);
+    return [];
   }
-  return [];
+
+  return (data || []).map(normaliseBusiness);
 }
 
-function saveBusinesses(businesses) {
-  fs.writeJsonSync(DATA_FILE, businesses, { spaces: 2 });
+async function getBusinessByTwilioNumber(twilioNumber) {
+  const cleanedNumber = cleanNumber(twilioNumber);
+
+  const { data, error } = await supabase
+    .from('businesses')
+    .select('*')
+    .eq('twilio_number', cleanedNumber);
+
+  if (error) {
+    console.error('getBusinessByTwilioNumber error:', error.message);
+    return null;
+  }
+
+  if (!data || data.length === 0) {
+    return null;
+  }
+
+  return normaliseBusiness(data[0]);
 }
 
-let businesses = loadBusinesses();
+async function hasDuplicateNumber(twilioNumber, excludeId = null) {
+  const cleanedNumber = cleanNumber(twilioNumber);
 
-app.get('/', (req, res) => {
+  let query = supabase
+    .from('businesses')
+    .select('id')
+    .eq('twilio_number', cleanedNumber);
+
+  if (excludeId) {
+    query = query.neq('id', excludeId);
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.error('hasDuplicateNumber error:', error.message);
+    return false;
+  }
+
+  return Array.isArray(data) && data.length > 0;
+}
+
+app.get('/', async (req, res) => {
+  const businesses = await getBusinesses();
+
   const businessCards = businesses
     .map(
       (business) => `
@@ -198,12 +267,21 @@ app.get('/', (req, res) => {
 
         #status {
           margin-top: 16px;
-          color: #16a34a;
           font-weight: 700;
-          background: #ecfdf5;
           padding: 10px 14px;
           border-radius: 12px;
           display: inline-block;
+          min-height: 20px;
+        }
+
+        .status-success {
+          color: #166534;
+          background: #dcfce7;
+        }
+
+        .status-error {
+          color: #991b1b;
+          background: #fee2e2;
         }
 
         .business-card {
@@ -387,8 +465,12 @@ app.get('/', (req, res) => {
 
         async function saveBusiness() {
           const btn = document.querySelector('.primary');
+          const status = document.getElementById('status');
+
           btn.innerText = 'Saving...';
           btn.disabled = true;
+          status.className = '';
+          status.innerText = '';
 
           const id = document.getElementById('businessId').value;
           const name = document.getElementById('businessName').value.trim();
@@ -399,36 +481,54 @@ app.get('/', (req, res) => {
           }
 
           const autoReplyMessage = document.getElementById('autoReplyMessage').value.trim();
-
           const url = id ? '/update-business/' + id : '/add-business';
 
-          await fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, twilioNumber, autoReplyMessage })
-          });
+          try {
+            const res = await fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ name, twilioNumber, autoReplyMessage })
+            });
 
-          document.getElementById('status').innerText = 'Saved successfully ✅';
+            const text = await res.text();
+            status.innerText = text;
+            status.className = res.ok ? 'status-success' : 'status-error';
+
+            if (res.ok) {
+              setTimeout(() => location.reload(), 800);
+            }
+          } catch (error) {
+            status.innerText = 'Something went wrong.';
+            status.className = 'status-error';
+          }
 
           btn.innerText = 'Save Business';
           btn.disabled = false;
-
-          setTimeout(() => location.reload(), 800);
         }
 
         function editBusiness(id) {
           const b = businesses.find(x => String(x.id) === String(id));
+          if (!b) return;
+
           document.getElementById('businessId').value = b.id;
           document.getElementById('businessName').value = b.name;
           document.getElementById('twilioNumber').value = b.twilioNumber;
           document.getElementById('autoReplyMessage').value = b.autoReplyMessage;
+          document.getElementById('status').innerText = '';
+          document.getElementById('status').className = '';
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function deleteBusiness(id) {
           if (!confirm('Delete this business?')) return;
-          await fetch('/delete-business/' + id, { method: 'POST' });
-          location.reload();
+
+          const res = await fetch('/delete-business/' + id, { method: 'POST' });
+          if (res.ok) {
+            location.reload();
+          } else {
+            const text = await res.text();
+            alert(text);
+          }
         }
 
         function clearForm() {
@@ -437,6 +537,7 @@ app.get('/', (req, res) => {
           document.getElementById('twilioNumber').value = '';
           document.getElementById('autoReplyMessage').value = '';
           document.getElementById('status').innerText = '';
+          document.getElementById('status').className = '';
         }
       </script>
     </body>
@@ -444,128 +545,115 @@ app.get('/', (req, res) => {
   `);
 });
 
-
-app.post('/add-business', (req, res) => {
+app.post('/add-business', async (req, res) => {
   const { name, twilioNumber, autoReplyMessage } = req.body;
 
   if (!name || !twilioNumber || !autoReplyMessage) {
     return res.status(400).send('Please fill in all fields.');
   }
 
-  const cleanedNumber = twilioNumber.replace(/\\s+/g, '');
+  const cleanedNumber = cleanNumber(twilioNumber);
 
-  const existing = businesses.find(
-    (b) => b.twilioNumber.replace(/\\s+/g, '') === cleanedNumber
-  );
-
-  if (existing) {
+  const duplicate = await hasDuplicateNumber(cleanedNumber);
+  if (duplicate) {
     return res.status(400).send('That Twilio number is already in use.');
   }
 
-  const newBusiness = {
-    id: Date.now(),
-    name,
-    twilioNumber: cleanedNumber,
-    autoReplyMessage
-  };
+  const { error } = await supabase.from('businesses').insert([
+    {
+      name,
+      twilio_number: cleanedNumber,
+      auto_reply_message: autoReplyMessage
+    }
+  ]);
 
-  businesses.push(newBusiness);
-  saveBusinesses(businesses);
+  if (error) {
+    console.error('add-business error:', error.message);
+    return res.status(500).send('Failed to add business.');
+  }
 
   res.send('Business added successfully');
 });
 
-app.post('/update-business/:id', (req, res) => {
+app.post('/update-business/:id', async (req, res) => {
   const { id } = req.params;
   const { name, twilioNumber, autoReplyMessage } = req.body;
 
-  const cleanedNumber = twilioNumber.replace(/\\s+/g, '');
-
-  const business = businesses.find((b) => String(b.id) === String(id));
-  if (!business) {
-    return res.status(404).send('Business not found.');
+  if (!name || !twilioNumber || !autoReplyMessage) {
+    return res.status(400).send('Please fill in all fields.');
   }
 
-  const conflict = businesses.find(
-    (b) =>
-      String(b.id) !== String(id) &&
-      b.twilioNumber.replace(/\\s+/g, '') === cleanedNumber
-  );
+  const cleanedNumber = cleanNumber(twilioNumber);
 
-  if (conflict) {
+  const duplicate = await hasDuplicateNumber(cleanedNumber, id);
+  if (duplicate) {
     return res.status(400).send('That Twilio number is already in use.');
   }
 
-  business.name = name;
-  business.twilioNumber = cleanedNumber;
-  business.autoReplyMessage = autoReplyMessage;
+  const { error } = await supabase
+    .from('businesses')
+    .update({
+      name,
+      twilio_number: cleanedNumber,
+      auto_reply_message: autoReplyMessage
+    })
+    .eq('id', id);
 
-  saveBusinesses(businesses);
+  if (error) {
+    console.error('update-business error:', error.message);
+    return res.status(500).send('Failed to update business.');
+  }
+
   res.send('Business updated successfully');
 });
 
-app.post('/delete-business/:id', (req, res) => {
+app.post('/delete-business/:id', async (req, res) => {
   const { id } = req.params;
-  businesses = businesses.filter((b) => String(b.id) !== String(id));
-  saveBusinesses(businesses);
+
+  const { error } = await supabase
+    .from('businesses')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('delete-business error:', error.message);
+    return res.status(500).send('Failed to delete business.');
+  }
+
   res.send('Business deleted successfully');
 });
 
-app.post('/sms', (req, res) => {
-  const twiml = new twilio.twiml.MessagingResponse();
-  twiml.message('Thanks for messaging RingReply!');
-
-  res.type('text/xml');
-  res.send(twiml.toString());
-});
-
 app.post('/voice', async (req, res) => {
-  const from = req.body.From;
-  const to = req.body.To;
+  const twiml = new twilio.twiml.VoiceResponse();
 
-  console.log('Incoming call from:', from, 'to:', to);
+  try {
+    const from = req.body.From;
+    const to = req.body.To;
 
-  const business = businesses.find(
-    (b) => b.twilioNumber.replace(/\\s+/g, '') === to.replace(/\\s+/g, '')
-  );
+    const business = await getBusinessByTwilioNumber(to);
 
-  if (!business) {
-    console.log('No matching business found for number:', to);
+    if (business) {
+      await client.messages.create({
+        body: business.autoReplyMessage,
+        from: to,
+        to: from
+      });
 
-    const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say('Sorry, this number is not set up.');
+      console.log('SMS sent to:', from);
+    }
+
     twiml.hangup();
-
+    res.type('text/xml');
+    return res.send(twiml.toString());
+  } catch (error) {
+    console.error('VOICE ERROR:', error);
+    twiml.hangup();
     res.type('text/xml');
     return res.send(twiml.toString());
   }
-
-  try {
-    await client.messages.create({
-      body: business.autoReplyMessage,
-      from: to,
-      to: from
-    });
-
-    console.log('SMS sent to:', from, 'for business:', business.name);
-
-    const twiml = new twilio.twiml.VoiceResponse();
-    twiml.hangup();
-
-    res.type('text/xml');
-    res.send(twiml.toString());
-  } catch (error) {
-    console.error('SMS send error:', error.message);
-
-    const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say('Sorry, an error occurred.');
-    twiml.hangup();
-
-    res.type('text/xml');
-    res.send(twiml.toString());
-  }
 });
 
-app.listen(3000, () => {
-  console.log('Server running on http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
