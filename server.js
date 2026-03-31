@@ -616,11 +616,15 @@ app.post('/sms', (req, res) => {
 
 app.post('/voice', async (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
+  twiml.hangup();
+
+  res.type('text/xml');
+  res.send(twiml.toString());
+
+  const from = req.body.From;
+  const to = req.body.To;
 
   try {
-    const from = req.body.From;
-    const to = req.body.To;
-
     const business = await getBusinessByTwilioNumber(to);
 
     if (business) {
@@ -631,16 +635,11 @@ app.post('/voice', async (req, res) => {
       });
 
       console.log('SMS sent to:', from);
+    } else {
+      console.log('No business found for number:', to);
     }
-
-    twiml.hangup();
-    res.type('text/xml');
-    return res.send(twiml.toString());
   } catch (error) {
-    console.error('VOICE ERROR:', error);
-    twiml.hangup();
-    res.type('text/xml');
-    return res.send(twiml.toString());
+    console.error('VOICE BACKGROUND ERROR:', error);
   }
 });
 
