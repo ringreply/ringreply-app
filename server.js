@@ -616,7 +616,7 @@ app.post('/sms', (req, res) => {
 
 app.post('/voice', (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.reject();
+  twiml.reject({ reason: 'busy' });
 
   res.type('text/xml');
   res.send(twiml.toString());
