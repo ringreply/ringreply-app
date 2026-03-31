@@ -614,9 +614,9 @@ app.post('/sms', (req, res) => {
   res.send(twiml.toString());
 });
 
-app.post('/voice', async (req, res) => {
+app.post('/voice', (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.hangup();
+  twiml.reject();
 
   res.type('text/xml');
   res.send(twiml.toString());
@@ -624,23 +624,25 @@ app.post('/voice', async (req, res) => {
   const from = req.body.From;
   const to = req.body.To;
 
-  try {
-    const business = await getBusinessByTwilioNumber(to);
+  setImmediate(async () => {
+    try {
+      const business = await getBusinessByTwilioNumber(to);
 
-    if (business) {
-      await client.messages.create({
-        body: business.autoReplyMessage,
-        from: to,
-        to: from
-      });
+      if (business) {
+        await client.messages.create({
+          body: business.autoReplyMessage,
+          from: to,
+          to: from
+        });
 
-      console.log('SMS sent to:', from);
-    } else {
-      console.log('No business found for number:', to);
+        console.log('SMS sent to:', from);
+      } else {
+        console.log('No business found for number:', to);
+      }
+    } catch (error) {
+      console.error('VOICE BACKGROUND ERROR:', error);
     }
-  } catch (error) {
-    console.error('VOICE BACKGROUND ERROR:', error);
-  }
+  });
 });
 
 const PORT = process.env.PORT || 3000;
