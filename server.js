@@ -9,13 +9,13 @@ const app = express();
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-if (!accountSid || !authToken || !supabaseUrl || !supabaseAnonKey) {
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!accountSid || !authToken || !supabaseUrl || !supabaseServiceRoleKey) {
   throw new Error("Missing environment variables");
 }
 
 const client = twilio(accountSid, authToken);
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
