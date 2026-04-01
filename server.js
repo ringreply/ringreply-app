@@ -554,9 +554,9 @@ app.post('/add-business', async (req, res) => {
   ]);
 
   if (error) {
-    console.error('add-business error:', error.message);
-    return res.status(500).send('Failed to add business.');
-  }
+  console.error('add-business error FULL:', error);
+  return res.status(500).send(`Failed to add business: ${error.message}`);
+}
 
   res.send('Business added successfully');
 });
