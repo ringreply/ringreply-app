@@ -626,6 +626,8 @@ app.post('/voice', (req, res) => {
 
   const from = req.body.From;
   const to = req.body.To;
+  console.log('VOICE from:', from);
+  console.log('VOICE to:', to);
 
   setImmediate(async () => {
     try {
