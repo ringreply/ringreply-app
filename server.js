@@ -619,7 +619,7 @@ app.post('/sms', (req, res) => {
 
 app.post('/voice', (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
-  twiml.reject();
+  twiml.hangup();
 
   res.type('text/xml');
   res.send(twiml.toString());
