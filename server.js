@@ -11,10 +11,10 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-console.log("SUPABASE_SERVICE_ROLE_KEY loaded:",!! process.env.SUPABASE_SERVICE_ROLE_KEY);
+console.log('SUPABASE_SERVICE_ROLE_KEY loaded:', !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 if (!accountSid || !authToken || !supabaseUrl || !supabaseServiceRoleKey) {
-  throw new Error("Missing environment variables");
+  throw new Error('Missing environment variables');
 }
 
 const client = twilio(accountSid, authToken);
@@ -554,9 +554,9 @@ app.post('/add-business', async (req, res) => {
   ]);
 
   if (error) {
-  console.error('add-business error FULL:', error);
-  return res.status(500).send(`Failed to add business: ${error.message}`);
-}
+    console.error('add-business error FULL:', error);
+    return res.status(500).send('Failed to add business: ' + error.message);
+  }
 
   res.send('Business added successfully');
 });
