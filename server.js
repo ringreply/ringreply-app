@@ -6,6 +6,28 @@ const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 
+function validateTwilioRequest(req, res, next) {
+  const signature = req.headers['x-twilio-signature'];
+
+  const url = process.env.PUBLIC_URL + req.originalUrl;
+
+  const params = req.body;
+
+  const isValid = twilio.validateRequest(
+    process.env.TWILIO_AUTH_TOKEN,
+    signature,
+    url,
+    params
+  );
+
+  if (!isValid) {
+    console.log('❌ Invalid Twilio request');
+    return res.status(403).send('Forbidden');
+  }
+
+  next();
+}
+
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -610,7 +632,7 @@ app.post('/delete-business/:id', async (req, res) => {
   res.send('Business deleted successfully');
 });
 
-app.post('/sms', async (req, res) => {
+app.post('/sms', validateTwilioRequest, async (req, res) => {
   const from = req.body.From; // customer number
   const to = req.body.To; // your Twilio number
 
@@ -638,7 +660,7 @@ app.post('/sms', async (req, res) => {
   res.send(twiml.toString());
 });
 
-app.post('/voice', (req, res) => {
+app.post('/voice', validateTwilioRequest, (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
   twiml.hangup();
 
