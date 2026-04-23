@@ -35,6 +35,7 @@ function normaliseBusiness(row) {
     name: row.name,
     twilioNumber: row.twilio_number,
     autoReplyMessage: row.auto_reply_message,
+    ownerMobile: row.owner_mobile,
     createdAt: row.created_at
   };
 }
@@ -609,7 +610,27 @@ app.post('/delete-business/:id', async (req, res) => {
   res.send('Business deleted successfully');
 });
 
-app.post('/sms', (req, res) => {
+app.post('/sms', async (req, res) => {
+  const from = req.body.From; // customer number
+  const to = req.body.To; // your Twilio number
+
+  console.log('SMS from:', from);
+  console.log('SMS to:', to);
+
+  const business = await getBusinessByTwilioNumber(to);
+
+  if (business && business.ownerMobile) {
+  await client.messages.create({
+    body: `New message from ${from}:\n\n${req.body.Body}`,
+    from: to,
+    to: business.ownerMobile
+  });
+
+  console.log('Forwarded SMS to owner:', business.ownerMobile);
+} else {
+  console.log('No owner mobile found for business:', business);
+}
+
   const twiml = new twilio.twiml.MessagingResponse();
   twiml.message('Thanks for messaging RingReply!');
 
