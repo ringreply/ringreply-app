@@ -621,7 +621,7 @@ app.post('/sms', async (req, res) => {
 
   if (business && business.ownerMobile) {
   await client.messages.create({
-    body: `New message from ${from}:\n\n${req.body.Body}`,
+    body: `${from}: ${req.body.Body}`,
     from: to,
     to: business.ownerMobile
   });
