@@ -451,7 +451,7 @@ app.get('/', async (req, res) => {
 <input id="twilioNumber" placeholder="+447...">
 
 <label>Owner Mobile</label>
-<input id="ownerMobile" placeholder="+447..." oninput="updateAutoMessage()">
+<input id="ownerMobile" placeholder="+447..." onblur="updateAutoMessage()">
 
 <label>Auto Reply Message</label>
 <textarea id="autoReplyMessage" placeholder="Hi, sorry we missed your call. Please text us on 07XXXXXXXXX with your job details and we’ll get back to you shortly. You can also reply here if easier."></textarea>
