@@ -148,6 +148,11 @@ app.get('/', async (req, res) => {
           </div>
         </div>
 
+        <div class="info-box">
+  <div class="label">Owner Mobile</div>
+  <div class="value">${business.ownerMobile || ''}</div>
+</div>
+
         <div class="message-section">
           <div class="label">Auto Reply Message</div>
           <div class="message">${business.autoReplyMessage}</div>
@@ -443,10 +448,13 @@ app.get('/', async (req, res) => {
           <input id="businessName" placeholder="Business name">
 
           <label>Twilio Number</label>
-          <input id="twilioNumber" placeholder="+447...">
+<input id="twilioNumber" placeholder="+447...">
 
-          <label>Auto Reply Message</label>
-          <textarea id="autoReplyMessage" placeholder="Your auto-reply message"></textarea>
+<label>Owner Mobile</label>
+<input id="ownerMobile" placeholder="+447...">
+
+<label>Auto Reply Message</label>
+<textarea id="autoReplyMessage" placeholder="Your auto-reply message"></textarea>
 
           <div class="button-row">
             <button class="primary" onclick="saveBusiness()">Save Business</button>
@@ -489,14 +497,20 @@ app.get('/', async (req, res) => {
             twilioNumber = '+44' + twilioNumber.slice(1);
           }
 
-          const autoReplyMessage = document.getElementById('autoReplyMessage').value.trim();
-          const url = id ? '/update-business/' + id : '/add-business';
+          let ownerMobile = document.getElementById('ownerMobile').value.trim();
+if (ownerMobile.startsWith('0')) {
+  ownerMobile = '+44' + ownerMobile.slice(1);
+}
+
+const autoReplyMessage = document.getElementById('autoReplyMessage').value.trim();
+const url = id ? '/update-business/' + id : '/add-business';
+
 
           try {
             const res = await fetch(url, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ name, twilioNumber, autoReplyMessage })
+              body: JSON.stringify({ name, twilioNumber, autoReplyMessage, ownerMobile })
             });
 
             const text = await res.text();
@@ -522,6 +536,7 @@ app.get('/', async (req, res) => {
           document.getElementById('businessId').value = b.id;
           document.getElementById('businessName').value = b.name;
           document.getElementById('twilioNumber').value = b.twilioNumber;
+          document.getElementById('ownerMobile').value = b.ownerMobile || '';
           document.getElementById('autoReplyMessage').value = b.autoReplyMessage;
           document.getElementById('status').innerText = '';
           document.getElementById('status').className = '';
@@ -544,6 +559,7 @@ app.get('/', async (req, res) => {
           document.getElementById('businessId').value = '';
           document.getElementById('businessName').value = '';
           document.getElementById('twilioNumber').value = '';
+          document.getElementById('ownerMobile').value = '';
           document.getElementById('autoReplyMessage').value = '';
           document.getElementById('status').innerText = '';
           document.getElementById('status').className = '';
@@ -555,13 +571,14 @@ app.get('/', async (req, res) => {
 });
 
 app.post('/add-business', async (req, res) => {
-  const { name, twilioNumber, autoReplyMessage } = req.body;
+  const { name, twilioNumber, autoReplyMessage, ownerMobile } = req.body;
 
-  if (!name || !twilioNumber || !autoReplyMessage) {
+  if (!name || !twilioNumber || !autoReplyMessage || !ownerMobile) {
     return res.status(400).send('Please fill in all fields.');
   }
 
   const cleanedNumber = cleanNumber(twilioNumber);
+  const cleanedOwnerMobile = cleanNumber(ownerMobile);
 
   const duplicate = await hasDuplicateNumber(cleanedNumber);
   if (duplicate) {
@@ -572,7 +589,8 @@ app.post('/add-business', async (req, res) => {
     {
       name,
       twilio_number: cleanedNumber,
-      auto_reply_message: autoReplyMessage
+      auto_reply_message: autoReplyMessage,
+      owner_mobile: cleanedOwnerMobile
     }
   ]);
 
@@ -586,13 +604,14 @@ app.post('/add-business', async (req, res) => {
 
 app.post('/update-business/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, twilioNumber, autoReplyMessage } = req.body;
+  const { name, twilioNumber, autoReplyMessage, ownerMobile } = req.body;
 
-  if (!name || !twilioNumber || !autoReplyMessage) {
+  if (!name || !twilioNumber || !autoReplyMessage || !ownerMobile) {
     return res.status(400).send('Please fill in all fields.');
   }
 
   const cleanedNumber = cleanNumber(twilioNumber);
+  const cleanedOwnerMobile = cleanNumber(ownerMobile);
 
   const duplicate = await hasDuplicateNumber(cleanedNumber, id);
   if (duplicate) {
@@ -604,7 +623,8 @@ app.post('/update-business/:id', async (req, res) => {
     .update({
       name,
       twilio_number: cleanedNumber,
-      auto_reply_message: autoReplyMessage
+      auto_reply_message: autoReplyMessage,
+      owner_mobile: cleanedOwnerMobile
     })
     .eq('id', id);
 
