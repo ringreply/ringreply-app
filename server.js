@@ -698,11 +698,7 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
   console.log('No owner mobile found for business:', business);
 }
 
-  const twiml = new twilio.twiml.MessagingResponse();
-  twiml.message('Thanks for messaging RingReply!');
-
-  res.type('text/xml');
-  res.send(twiml.toString());
+  res.sendStatus(200);
 });
 
 app.post('/voice', validateTwilioRequest, (req, res) => {
