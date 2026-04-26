@@ -76,6 +76,21 @@ async function getBusinesses() {
   return (data || []).map(normaliseBusiness);
 }
 
+async function getMessages() {
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(25);
+
+  if (error) {
+    console.error('getMessages error:', error.message);
+    return [];
+  }
+
+  return data || [];
+}
+
 async function getBusinessByTwilioNumber(twilioNumber) {
   const cleanedNumber = cleanNumber(twilioNumber);
 
@@ -120,6 +135,7 @@ async function hasDuplicateNumber(twilioNumber, excludeId = null) {
 
 app.get('/', async (req, res) => {
   const businesses = await getBusinesses();
+  const messages = await getMessages();
 
   const businessCards = businesses
     .map(
@@ -161,6 +177,40 @@ app.get('/', async (req, res) => {
     `
     )
     .join('');
+
+    const messageCards = messages
+  .map((message) => {
+    const business = businesses.find(b => String(b.id) === String(message.business_id));
+
+    return `
+      <div class="business-card">
+        <div class="card-header">
+          <div>
+            <h3>${business ? business.name : 'Unknown Business'}</h3>
+            <span class="badge">Inbound message</span>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-box">
+            <div class="label">Customer Number</div>
+            <div class="value">${message.customer_number}</div>
+          </div>
+
+          <div class="info-box">
+            <div class="label">Received</div>
+            <div class="value">${new Date(message.created_at).toLocaleString()}</div>
+          </div>
+        </div>
+
+        <div class="message-section">
+          <div class="label">Message</div>
+          <div class="message">${message.message_body}</div>
+        </div>
+      </div>
+    `;
+  })
+  .join('');
 
   res.send(`
   <html>
@@ -476,6 +526,18 @@ app.get('/', async (req, res) => {
           }
         </div>
       </div>
+
+      <div class="card">
+  <h2>Inbox</h2>
+  <p class="subtext">Latest customer replies</p>
+  ${
+    messageCards ||
+    `<div class="empty">
+      No messages yet<br>
+      <span>Customer replies will appear here</span>
+    </div>`
+  }
+</div>
 
       <script>
         const businesses = ${JSON.stringify(businesses)};
