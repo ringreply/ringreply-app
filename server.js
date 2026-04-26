@@ -686,6 +686,24 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
 
   const business = await getBusinessByTwilioNumber(to);
 
+  if (business) {
+  const { error: messageError } = await supabase.from('messages').insert([
+    {
+      business_id: business.id,
+      customer_number: from,
+      twilio_number: to,
+      message_body: req.body.Body,
+      direction: 'inbound'
+    }
+  ]);
+
+  if (messageError) {
+    console.error('Failed to save incoming message:', messageError.message);
+  } else {
+    console.log('Incoming message saved');
+  }
+}
+
   if (business && business.ownerMobile) {
   await client.messages.create({
     body: `${business.name} | ${from}: ${req.body.Body}`,
