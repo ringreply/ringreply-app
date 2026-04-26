@@ -688,7 +688,7 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
 
   if (business && business.ownerMobile) {
   await client.messages.create({
-    body: `${from}: ${req.body.Body}`,
+    body: `${business.name} | ${from}: ${req.body.Body}`,
     from: to,
     to: business.ownerMobile
   });
