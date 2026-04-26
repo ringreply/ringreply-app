@@ -454,7 +454,7 @@ app.get('/', async (req, res) => {
 <input id="ownerMobile" placeholder="+447..." onblur="updateAutoMessage()">
 
 <label>Auto Reply Message</label>
-<textarea id="autoReplyMessage" placeholder="Hi, sorry we missed your call. Please text us on 07XXXXXXXXX with your job details and we’ll get back to you shortly. You can also reply here if easier."></textarea>
+<textarea id="autoReplyMessage" placeholder="Hi, sorry we missed your call. This is [Business Name]. Please text us on 07XXXXXXXXX with your job details and we’ll get back to you shortly. You can also reply here if easier."></textarea>
 
           <div class="button-row">
             <button class="primary" onclick="saveBusiness()">Save Business</button>
