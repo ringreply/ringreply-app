@@ -698,7 +698,11 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
   console.log('No owner mobile found for business:', business);
 }
 
-  res.sendStatus(200);
+  const twiml = new twilio.twiml.MessagingResponse();
+twiml.message('Thanks, your message has been passed on. They’ll get back to you shortly.');
+
+res.type('text/xml');
+res.send(twiml.toString());
 });
 
 app.post('/voice', validateTwilioRequest, (req, res) => {
