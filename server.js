@@ -208,6 +208,11 @@ app.get('/', async (req, res) => {
           <div class="message">${message.message_body}</div>
         </div>
       </div>
+
+      <textarea id="reply-${message.id}" placeholder="Type reply..."></textarea>
+<button onclick="sendReply('${message.id}', '${message.customer_number}', '${message.twilio_number}')">
+  Send Reply
+</button>
     `;
   })
   .join('');
@@ -642,6 +647,29 @@ const url = id ? '/update-business/' + id : '/add-business';
   }
 }
 
+async function sendReply(messageId, customerNumber, twilioNumber) {
+  const replyText = document.getElementById('reply-' + messageId).value.trim();
+
+  if (!replyText) {
+    alert('Type a reply first');
+    return;
+  }
+
+  const res = await fetch('/send-reply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ customerNumber, twilioNumber, replyText })
+  });
+
+  const text = await res.text();
+  alert(text);
+
+  if (res.ok) {
+    location.reload();
+  }
+}
+
+
         function clearForm() {
           document.getElementById('businessId').value = '';
           document.getElementById('businessName').value = '';
@@ -783,6 +811,31 @@ twiml.message('Thanks, your message has been passed on. They’ll get back to yo
 
 res.type('text/xml');
 res.send(twiml.toString());
+});
+
+app.post('/send-reply', async (req, res) => {
+  const { customerNumber, twilioNumber, replyText } = req.body;
+
+  if (!customerNumber || !twilioNumber || !replyText) {
+    return res.status(400).send('Missing reply details.');
+  }
+
+  await client.messages.create({
+    body: replyText,
+    from: twilioNumber,
+    to: customerNumber
+  });
+
+  await supabase.from('messages').insert([
+    {
+      customer_number: customerNumber,
+      twilio_number: twilioNumber,
+      message_body: replyText,
+      direction: 'outbound'
+    }
+  ]);
+
+  res.send('Reply sent');
 });
 
 app.post('/voice', validateTwilioRequest, (req, res) => {
