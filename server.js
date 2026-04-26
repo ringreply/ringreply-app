@@ -445,7 +445,7 @@ app.get('/', async (req, res) => {
           <input type="hidden" id="businessId">
 
           <label>Business Name</label>
-          <input id="businessName" placeholder="Business name" onblur=updateAutoMessage()">
+          <input id="businessName" placeholder="Business name" onblur="updateAutoMessage()">
 
           <label>Twilio Number</label>
 <input id="twilioNumber" placeholder="+447...">
