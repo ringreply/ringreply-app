@@ -564,7 +564,7 @@ const url = id ? '/update-business/' + id : '/add-business';
 
   const textarea = document.getElementById('autoReplyMessage');
 
-  if (!textarea.value) {
+  if (!textarea.value || textarea.value.includes('07XXXXXXXXX')) {
     textarea.value = 'Hi, sorry we missed your call. Please text us on ' + ownerMobile + ' with your job details and we will get back to you shortly. You can also reply here if easier.';
   }
 }
