@@ -571,12 +571,12 @@ const url = id ? '/update-business/' + id : '/add-business';
     textarea.value.includes('[Business Name]');
 
   if (isDefault) {
-    textarea.value =
+  textarea.value =
   'Hi, sorry we missed your call. This is ' +
   (businessName || '[Business Name]') +
   '. Please text us on ' +
-  (ownerMobile || '07XXXXXXXXX') +
-  ' with your job details and we will get back to you shortly. You can also reply here if easier.';
+  (ownerMobile || '07XXXXXXXXXX') +
+  ' with your job details and we will get back to you shortly. You can also reply here if easier.'; 
   }
 }
 
