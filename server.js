@@ -445,7 +445,7 @@ app.get('/', async (req, res) => {
           <input type="hidden" id="businessId">
 
           <label>Business Name</label>
-          <input id="businessName" placeholder="Business name">
+          <input id="businessName" placeholder="Business name" onblur=updateAutoMessage()">
 
           <label>Twilio Number</label>
 <input id="twilioNumber" placeholder="+447...">
@@ -555,8 +555,9 @@ const url = id ? '/update-business/' + id : '/add-business';
           }
         }
 
-        function updateAutoMessage() {
+      function updateAutoMessage() {
   let ownerMobile = document.getElementById('ownerMobile').value.trim();
+  let businessName = document.getElementById('businessName').value.trim();
 
   if (ownerMobile.startsWith('0')) {
     ownerMobile = '+44' + ownerMobile.slice(1);
@@ -564,8 +565,18 @@ const url = id ? '/update-business/' + id : '/add-business';
 
   const textarea = document.getElementById('autoReplyMessage');
 
-  if (!textarea.value || textarea.value.includes('07XXXXXXXXX')) {
-    textarea.value = 'Hi, sorry we missed your call. Please text us on ' + ownerMobile + ' with your job details and we will get back to you shortly. You can also reply here if easier.';
+  const isDefault =
+    !textarea.value ||
+    textarea.value.includes('07XXXXXXXXX') ||
+    textarea.value.includes('[Business Name]');
+
+  if (isDefault) {
+    textarea.value =
+  'Hi, sorry we missed your call. This is ' +
+  (businessName || '[Business Name]') +
+  '. Please text us on ' +
+  (ownerMobile || '07XXXXXXXXX') +
+  ' with your job details and we will get back to you shortly. You can also reply here if easier.';
   }
 }
 
