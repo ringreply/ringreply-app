@@ -576,7 +576,7 @@ const url = id ? '/update-business/' + id : '/add-business';
   (businessName || '[Business Name]') +
   '. Please text us on ' +
   (ownerMobile || '07XXXXXXXXXX') +
-  ' with your job details and we will get back to you shortly. You can also reply here if easier.'; 
+  ' with your job details and we will get back to you shortly. You can also reply here if easier.';
   }
 }
 
