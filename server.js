@@ -921,14 +921,21 @@ app.get('/conversation', async (req, res) => {
         <a href="/">← Back to inbox</a>
         <h2>Conversation with ${customer}</h2>
 
-        <div style="max-width:700px;">
+        <div id="chat" style="max-width:700px; max-height:70vh; overflow-y:auto;">
           ${messagesHtml || '<p>No messages yet.</p>'}
+          </div>
 
-          <textarea id="reply" placeholder="Type reply..." style="width:100%; min-height:100px; padding:12px; margin-top:20px;"></textarea>
-          <button onclick="sendReply()" style="padding:12px 20px; margin-top:10px;">Send Reply</button>
+          <div style="margin-top:20px; display:flex; gap:10px;">
+  <textarea id="reply" placeholder="Type reply..." style="flex:1; min-height:60px;"></textarea>
+  <button onclick="sendReply()" style="padding:12px 20px;">Send</button>
         </div>
 
         <script>
+
+        const chat = document.getElementById('chat');
+if (chat) {
+  chat.scrollTop = chat.scrollHeight;
+}
           async function sendReply() {
             const replyText = document.getElementById('reply').value.trim();
 
