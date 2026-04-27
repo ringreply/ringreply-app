@@ -779,7 +779,7 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
   if (business) {
   const { error: messageError } = await supabase.from('messages').insert([
     {
-      business_id: business.id,
+      business_id: business.Id,
       customer_number: from,
       twilio_number: to,
       message_body: req.body.Body,
@@ -814,7 +814,7 @@ res.send(twiml.toString());
 });
 
 app.post('/send-reply', async (req, res) => {
-  const { customerNumber, twilioNumber, replyText, business_id } = req.body;
+  const { customerNumber, twilioNumber, replyText, business_Id } = req.body;
 
   if (!customerNumber || !twilioNumber || !replyText) {
     return res.status(400).send('Missing reply details.');
@@ -828,7 +828,7 @@ app.post('/send-reply', async (req, res) => {
 
   await supabase.from('messages').insert([
     {
-      business_id: business_id,
+      business_id: business_Id,
       customer_number: customerNumber,
       twilio_number: twilioNumber,
       message_body: replyText,
