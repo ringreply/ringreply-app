@@ -178,7 +178,7 @@ app.get('/', async (req, res) => {
     )
     .join('');
 
-    const conversations = {};
+  const conversations = {};
 
 messages.forEach((msg) => {
   const key = msg.customer_number + '_' + msg.business_id;
@@ -212,14 +212,15 @@ const messageCards = Object.values(conversations)
           <div class="label">Last message</div>
           <div class="message">${message.message_body}</div>
         </div>
-        
-<textarea id="reply-${message.id}" placeholder="Type reply..."></textarea>
-<button class="primary" onclick="sendReply('${message.id}', '${message.customer_number}', '${message.twilio_number}', '${message.business_id}')">
-  Send Reply
-</button>
 
         <div class="value">${new Date(message.created_at).toLocaleString()}</div>
       </div>
+
+      <div style="margin-top:10px;">
+  <button onclick="openConversation('${message.customer_number}', '${message.business_id}')">
+    Open Conversation
+  </button>
+</div>
     `;
   })
   .join('');
