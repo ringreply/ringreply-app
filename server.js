@@ -178,41 +178,43 @@ app.get('/', async (req, res) => {
     )
     .join('');
 
-    const messageCards = messages
+    const conversations = {};
+
+messages.forEach((msg) => {
+  const key = msg.customer_number + '_' + msg.business_id;
+
+  if (!conversations[key]) {
+    conversations[key] = msg;
+  } else {
+    // keep latest message
+    if (new Date(msg.created_at) > new Date(conversations[key].created_at)) {
+      conversations[key] = msg;
+    }
+  }
+});
+
+const messageCards = Object.values(conversations)
   .map((message) => {
-    const business = businesses.find(b => String(b.id) === String(message.business_id));
+    const business = businesses.find(
+      (b) => String(b.id) === String(message.business_id)
+    );
 
     return `
       <div class="business-card">
         <div class="card-header">
           <div>
-            <h3>${business ? business.name : 'Unknown Business'}</h3>
-            <span class="badge">Inbound message</span>
-          </div>
-        </div>
-
-        <div class="info-grid">
-          <div class="info-box">
-            <div class="label">Customer Number</div>
-            <div class="value">${message.customer_number}</div>
-          </div>
-
-          <div class="info-box">
-            <div class="label">Received</div>
-            <div class="value">${new Date(message.created_at).toLocaleString()}</div>
+            <h3>${message.customer_number}</h3>
+            <span class="badge">${business ? business.name : ''}</span>
           </div>
         </div>
 
         <div class="message-section">
-          <div class="label">Message</div>
+          <div class="label">Last message</div>
           <div class="message">${message.message_body}</div>
         </div>
-      </div>
 
-      <textarea id="reply-${message.id}" placeholder="Type reply..."></textarea>
-<button onclick="sendReply('${message.id}', '${message.customer_number}', '${message.twilio_number}', '${message.business_id}')">
-  Send Reply
-</button>
+        <div class="value">${new Date(message.created_at).toLocaleString()}</div>
+      </div>
     `;
   })
   .join('');
