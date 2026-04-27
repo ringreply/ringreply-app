@@ -708,7 +708,12 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
           document.getElementById('status').innerText = '';
           document.getElementById('status').className = '';
         }
-      </script>
+
+        setTimeout(() => {
+    location.reload();
+  }, 30000);
+</script>
+  
     </body>
   </html>
   `);
@@ -958,6 +963,16 @@ app.get('/conversation', async (req, res) => {
 if (chat) {
   chat.scrollTop = chat.scrollHeight;
 }
+
+  setTimeout(() => {
+  const active = document.activeElement;
+
+  if (!active || active.id !== 'reply') {
+    window.location.reload(); // current
+    // later we can replace this with AJAX live updates
+  }
+}, 30000);
+
           async function sendReply() {
             const replyText = document.getElementById('reply').value.trim();
 
