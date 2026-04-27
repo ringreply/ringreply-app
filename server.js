@@ -654,6 +654,14 @@ const url = id ? '/update-business/' + id : '/add-business';
   }
 }
 
+function openConversation(customerNumber, businessId) {
+  window.location.href =
+    '/conversation?customer=' +
+    encodeURIComponent(customerNumber) +
+    '&business=' +
+    encodeURIComponent(businessId);
+}
+
 async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
   const replyText = document.getElementById('reply-' + messageId).value.trim();
 
