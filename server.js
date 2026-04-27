@@ -865,6 +865,81 @@ app.post('/send-reply', async (req, res) => {
   }
 });
 
+app.get('/conversation', async (req, res) => {
+  const { customer, business } = req.query;
+
+  if (!customer || !business) {
+    return res.send('Missing conversation details.');
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('customer_number', customer)
+    .eq('business_id', business)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    console.error('Conversation load error:', error.message);
+    return res.send('Error loading conversation.');
+  }
+
+  const messagesHtml = (data || []).map((msg) => `
+    <div style="margin-bottom:12px; padding:12px; border-radius:12px; background:${msg.direction === 'outbound' ? '#dcfce7' : '#f1f5f9'};">
+      <strong>${msg.direction === 'outbound' ? 'You' : 'Customer'}:</strong>
+      <div>${msg.message_body || ''}</div>
+      <small>${new Date(msg.created_at).toLocaleString()}</small>
+    </div>
+  `).join('');
+
+  const twilioNumber = data && data[0] ? data[0].twilio_number : '';
+
+  res.send(`
+    <html>
+      <body style="font-family: Arial, sans-serif; padding: 20px; background:#f8fafc;">
+        <a href="/">← Back to inbox</a>
+        <h2>Conversation with ${customer}</h2>
+
+        <div style="max-width:700px;">
+          ${messagesHtml || '<p>No messages yet.</p>'}
+
+          <textarea id="reply" placeholder="Type reply..." style="width:100%; min-height:100px; padding:12px; margin-top:20px;"></textarea>
+          <button onclick="sendReply()" style="padding:12px 20px; margin-top:10px;">Send Reply</button>
+        </div>
+
+        <script>
+          async function sendReply() {
+            const replyText = document.getElementById('reply').value.trim();
+
+            if (!replyText) {
+              alert('Type a reply first');
+              return;
+            }
+
+            const res = await fetch('/send-reply', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                customerNumber: '${customer}',
+                twilioNumber: '${twilioNumber}',
+                replyText,
+                businessId: '${business}'
+              })
+            });
+
+            const text = await res.text();
+            alert(text);
+
+            if (res.ok) {
+              location.reload();
+            }
+          }
+        </script>
+      </body>
+    </html>
+  `);
+});
+
 app.post('/voice', validateTwilioRequest, (req, res) => {
   const twiml = new twilio.twiml.VoiceResponse();
   twiml.hangup();
