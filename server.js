@@ -888,6 +888,13 @@ app.get('/conversation', async (req, res) => {
     return res.send('Missing conversation details.');
   }
 
+  await supabase
+  .from('messages')
+  .update({ read: true })
+  .eq('customer_number', customer)
+  .eq('business_id', business)
+  .eq('direction', 'inbound');
+
   const { data, error } = await supabase
     .from('messages')
     .select('*')
