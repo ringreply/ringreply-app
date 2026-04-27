@@ -768,8 +768,8 @@ app.post('/delete-business/:id', async (req, res) => {
 });
 
 app.post('/sms', validateTwilioRequest, async (req, res) => {
-  const from = req.body.From; // customer number
-  const to = req.body.To; // your Twilio number
+  const from = req.body.From;
+  const to = req.body.To;
 
   console.log('SMS from:', from);
   console.log('SMS to:', to);
@@ -777,66 +777,77 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
   const business = await getBusinessByTwilioNumber(to);
 
   if (business) {
-  const { error: messageError } = await supabase.from('messages').insert([
-    {
-      business_id: business.Id,
-      customer_number: from,
-      twilio_number: to,
-      message_body: req.body.Body,
-      direction: 'inbound'
-    }
-  ]);
+    const { error: messageError } = await supabase.from('messages').insert([
+      {
+        business_id: business.id,
+        customer_number: from,
+        twilio_number: to,
+        message_body: req.body.Body,
+        direction: 'inbound'
+      }
+    ]);
 
-  if (messageError) {
-    console.error('Failed to save incoming message:', messageError.message);
-  } else {
-    console.log('Incoming message saved');
+    if (messageError) {
+      console.error('Failed to save incoming message:', messageError.message);
+    } else {
+      console.log('Incoming message saved');
+    }
   }
-}
 
   if (business && business.ownerMobile) {
-  await client.messages.create({
-    body: `${business.name} | ${from}: ${req.body.Body}`,
-    from: to,
-    to: business.ownerMobile
-  });
+    await client.messages.create({
+      body: `${business.name} | ${from}: ${req.body.Body}`,
+      from: to,
+      to: business.ownerMobile
+    });
 
-  console.log('Forwarded SMS to owner:', business.ownerMobile);
-} else {
-  console.log('No owner mobile found for business:', business);
-}
+    console.log('Forwarded SMS to owner:', business.ownerMobile);
+  } else {
+    console.log('No owner mobile found for business:', business);
+  }
 
   const twiml = new twilio.twiml.MessagingResponse();
-twiml.message('Thanks, your message has been passed on. They’ll get back to you shortly.');
+  twiml.message("Thanks, your message has been passed on. They'll get back to you shortly.");
 
-res.type('text/xml');
-res.send(twiml.toString());
+  res.type('text/xml');
+  res.send(twiml.toString());
 });
 
 app.post('/send-reply', async (req, res) => {
-  const { customerNumber, twilioNumber, replyText, business_Id } = req.body;
+  const { customerNumber, twilioNumber, replyText, businessId } = req.body;
 
-  if (!customerNumber || !twilioNumber || !replyText) {
+  if (!customerNumber || !twilioNumber || !replyText || !businessId) {
     return res.status(400).send('Missing reply details.');
   }
 
-  await client.messages.create({
-    body: replyText,
-    from: twilioNumber,
-    to: customerNumber
-  });
+  try {
+    const sent = await client.messages.create({
+      body: replyText,
+      from: twilioNumber,
+      to: customerNumber
+    });
 
-  await supabase.from('messages').insert([
-    {
-      business_id: businessId,
-      customer_number: customerNumber,
-      twilio_number: twilioNumber,
-      message_body: replyText,
-      direction: 'outbound'
+    const { error } = await supabase.from('messages').insert([
+      {
+        business_id: businessId,
+        customer_number: customerNumber,
+        twilio_number: twilioNumber,
+        message_body: replyText,
+        direction: 'outbound'
+      }
+    ]);
+
+    if (error) {
+      console.error('Failed to save outbound reply:', error.message);
+      return res.status(500).send('Reply sent, but failed to save message.');
     }
-  ]);
 
-  res.send('Reply sent');
+    console.log('Reply sent:', sent.sid);
+    res.send('Reply sent');
+  } catch (error) {
+    console.error('Reply send failed:', error.message);
+    res.status(500).send('Reply failed: ' + error.message);
+  }
 });
 
 app.post('/voice', validateTwilioRequest, (req, res) => {
