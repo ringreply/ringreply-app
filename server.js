@@ -200,7 +200,7 @@ const messageCards = Object.values(conversations)
     );
 
     return `
-      <div class="business-card">
+      <div class="business-card" onclick="openConversation('${message.customer_number}', '${message.business_id}')">
         <div class="card-header">
           <div>
             <h3>${message.customer_number}</h3>
