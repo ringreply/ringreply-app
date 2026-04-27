@@ -184,12 +184,22 @@ messages.forEach((msg) => {
   const key = msg.customer_number + '_' + msg.business_id;
 
   if (!conversations[key]) {
-    conversations[key] = msg;
-  } else {
-    // keep latest message
-    if (new Date(msg.created_at) > new Date(conversations[key].created_at)) {
-      conversations[key] = msg;
-    }
+    conversations[key] = {
+      ...msg,
+      unreadCount: 0
+    };
+  }
+
+  // keep latest message
+  if (new Date(msg.created_at) > new Date(conversations[key].created_at)) {
+    conversations[key] = {
+      ...msg,
+      unreadCount: conversations[key].unreadCount
+    };
+  }
+
+  if (msg.direction === 'inbound' && msg.read === false) {
+    conversations[key].unreadCount++;
   }
 });
 
@@ -204,7 +214,10 @@ const messageCards = Object.values(conversations)
         <div class="card-header">
           <div>
             <h3>${message.customer_number}</h3>
-            <span class="badge">${business ? business.name : ''}</span>
+            <span class="badge">
+  ${business ? business.name : ''}
+  ${message.unreadCount > 0 ? ` • ${message.unreadCount} new` : ''}
+</span>
           </div>
         </div>
 
@@ -799,7 +812,8 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
         customer_number: from,
         twilio_number: to,
         message_body: req.body.Body,
-        direction: 'inbound'
+        direction: 'inbound',
+        read: false
       }
     ]);
 
@@ -849,7 +863,8 @@ app.post('/send-reply', async (req, res) => {
         customer_number: customerNumber,
         twilio_number: twilioNumber,
         message_body: replyText,
-        direction: 'outbound'
+        direction: 'outbound',
+        read: true
       }
     ]);
 
