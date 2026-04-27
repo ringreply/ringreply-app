@@ -210,7 +210,7 @@ app.get('/', async (req, res) => {
       </div>
 
       <textarea id="reply-${message.id}" placeholder="Type reply..."></textarea>
-<button onclick="sendReply('${message.id}', '${message.customer_number}', '${message.twilio_number}')">
+<button onclick="sendReply('${message.id}', '${message.customer_number}', '${message.twilio_number}', '${message.business_id}')">
   Send Reply
 </button>
     `;
@@ -647,7 +647,7 @@ const url = id ? '/update-business/' + id : '/add-business';
   }
 }
 
-async function sendReply(messageId, customerNumber, twilioNumber) {
+async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
   const replyText = document.getElementById('reply-' + messageId).value.trim();
 
   if (!replyText) {
@@ -658,7 +658,7 @@ async function sendReply(messageId, customerNumber, twilioNumber) {
   const res = await fetch('/send-reply', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customerNumber, twilioNumber, replyText })
+    body: JSON.stringify({ customerNumber, twilioNumber, replyText, businessId })
   });
 
   const text = await res.text();
@@ -814,7 +814,7 @@ res.send(twiml.toString());
 });
 
 app.post('/send-reply', async (req, res) => {
-  const { customerNumber, twilioNumber, replyText } = req.body;
+  const { customerNumber, twilioNumber, replyText, business_id } = req.body;
 
   if (!customerNumber || !twilioNumber || !replyText) {
     return res.status(400).send('Missing reply details.');
