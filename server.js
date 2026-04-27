@@ -885,13 +885,33 @@ app.get('/conversation', async (req, res) => {
     return res.send('Error loading conversation.');
   }
 
-  const messagesHtml = (data || []).map((msg) => `
-    <div style="margin-bottom:12px; padding:12px; border-radius:12px; background:${msg.direction === 'outbound' ? '#dcfce7' : '#f1f5f9'};">
-      <strong>${msg.direction === 'outbound' ? 'You' : 'Customer'}:</strong>
-      <div>${msg.message_body || ''}</div>
-      <small>${new Date(msg.created_at).toLocaleString()}</small>
+  const messagesHtml = (data || []).map((msg) => {
+  const isOutbound = msg.direction === 'outbound';
+
+  return `
+    <div style="
+      display:flex;
+      justify-content:${isOutbound ? 'flex-end' : 'flex-start'};
+      margin-bottom:12px;
+    ">
+      <div style="
+        max-width:70%;
+        padding:12px 14px;
+        border-radius:16px;
+        background:${isOutbound ? '#dcfce7' : '#e0f2fe'};
+        border-bottom-${isOutbound ? 'right' : 'left'}-radius:4px;
+      ">
+        <div style="font-weight:700; margin-bottom:4px;">
+          ${isOutbound ? 'You' : 'Customer'}
+        </div>
+        <div>${msg.message_body || ''}</div>
+        <small style="display:block; margin-top:6px; color:#64748b;">
+          ${new Date(msg.created_at).toLocaleString()}
+        </small>
+      </div>
     </div>
-  `).join('');
+  `;
+}).join('');
 
   const twilioNumber = data && data[0] ? data[0].twilio_number : '';
 
