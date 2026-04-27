@@ -828,7 +828,7 @@ app.post('/send-reply', async (req, res) => {
 
   await supabase.from('messages').insert([
     {
-      business_id: business_Id,
+      business_id: businessId,
       customer_number: customerNumber,
       twilio_number: twilioNumber,
       message_body: replyText,
