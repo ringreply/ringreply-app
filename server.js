@@ -1046,14 +1046,22 @@ app.post('/voice', validateTwilioRequest, (req, res) => {
 });
 
 app.get('/businesses', async (req, res) => {
-  const { data, error } = await supabase
-    .from('businesses')
-    .select('*');
+  try {
+    const { data, error } = await supabase
+      .from('businesses')
+      .select('*');
 
-  if (error) {
-    console.error('getBusinesses error:', error);
-    return res.status(500).json({ error });
+    if (error) {
+      console.error('getBusinesses error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error('Route error:', err);
+    res.status(500).json({ error: 'Server error' });
   }
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
