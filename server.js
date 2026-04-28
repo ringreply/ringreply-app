@@ -3,6 +3,8 @@ require('dotenv').config();
 const express = require('express');
 const twilio = require('twilio');
 const { createClient } = require('@supabase/supabase-js');
+const session = require('express-session');
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -45,6 +47,11 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'change-this-secret',
+  resave: false,
+  saveUninitialized: false
+}));
 
 function cleanNumber(number) {
   if (!number) return '';
