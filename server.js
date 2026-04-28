@@ -141,6 +141,10 @@ async function hasDuplicateNumber(twilioNumber, excludeId = null) {
 }
 
 app.get('/', async (req, res) => {
+  if (!req.session.userId) {
+  return res.redirect('/login-page');
+}
+
   const businesses = await getBusinesses();
   const messages = await getMessages();
 
@@ -716,13 +720,38 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
           document.getElementById('status').className = '';
         }
 
-        setTimeout(() => {
-    location.reload();
-  }, 30000);
 </script>
   
     </body>
   </html>
+  `);
+});
+
+app.get('/login-page', (req, res) => {
+  res.send(`
+    <h2>Login</h2>
+    <input id="email" placeholder="Email"><br><br>
+    <input id="password" type="password" placeholder="Password"><br><br>
+    <button onclick="login()">Login</button>
+
+    <script>
+      async function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email, password })
+        });
+
+        if (res.ok) {
+          location.href = '/';
+        } else {
+          alert(await res.text());
+        }
+      }
+    </script>
   `);
 });
 
@@ -1043,6 +1072,54 @@ app.post('/voice', validateTwilioRequest, (req, res) => {
       console.error('VOICE BACKGROUND ERROR:', error);
     }
   });
+});
+
+app.post('/signup', async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).send('Missing email or password');
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  const { error } = await supabase.from('users').insert([
+    {
+      email,
+      password: hashed
+    }
+  ]);
+
+  if (error) {
+    console.error('Signup error:', error.message);
+    return res.status(500).send('Signup failed');
+  }
+
+  res.send('User created');
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (error || !data) {
+    return res.status(400).send('Invalid login');
+  }
+
+  const valid = await bcrypt.compare(password, data.password);
+
+  if (!valid) {
+    return res.status(400).send('Invalid login');
+  }
+
+  req.session.userId = data.id;
+
+  res.send('Logged in');
 });
 
 app.get('/businesses', async (req, res) => {
