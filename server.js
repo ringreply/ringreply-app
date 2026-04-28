@@ -84,10 +84,13 @@ async function getBusinesses(userId) {
   return (data || []).map(normaliseBusiness);
 }
 
-async function getMessages() {
+async function getMessages(businessIds = []) {
+  if (!businessIds.length) return [];
+
   const { data, error } = await supabase
     .from('messages')
     .select('*')
+    .in('business_id', businessIds)
     .order('created_at', { ascending: false })
     .limit(25);
 
@@ -147,8 +150,9 @@ app.get('/', async (req, res) => {
 }
 
   const businesses = await getBusinesses(req.session.userId);
-  const messages = await getMessages();
-
+  const businessIds = businesses.map(b => b.id);
+  const messages = await getMessages(businessIds);
+  
   const businessCards = businesses
     .map(
       (business) => `
@@ -960,6 +964,21 @@ app.post('/send-reply', async (req, res) => {
 
 app.get('/conversation', async (req, res) => {
   const { customer, business } = req.query;
+
+  if (!req.session.userId) {
+  return res.redirect('/login-page');
+}
+
+const { data: ownedBusiness, error: ownedBusinessError } = await supabase
+  .from('businesses')
+  .select('id')
+  .eq('id', business)
+  .eq('user_id', req.session.userId)
+  .single();
+
+if (ownedBusinessError || !ownedBusiness) {
+  return res.status(403).send('Not allowed.');
+}
 
   if (!customer || !business) {
     return res.send('Missing conversation details.');
