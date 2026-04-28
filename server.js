@@ -716,9 +716,6 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
           document.getElementById('status').className = '';
         }
 
-        setTimeout(() => {
-    location.reload();
-  }, 30000);
 </script>
   
     </body>
@@ -1043,6 +1040,24 @@ app.post('/voice', validateTwilioRequest, (req, res) => {
       console.error('VOICE BACKGROUND ERROR:', error);
     }
   });
+});
+
+app.get('/businesses', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('businesses')
+      .select('*');
+
+    if (error) {
+      console.error('getBusinesses error:', error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error('Route error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
