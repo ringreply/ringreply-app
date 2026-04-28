@@ -527,6 +527,7 @@ const messageCards = Object.values(conversations)
       <div class="container">
         <div class="header">
         <div style="text-align:right; margin-bottom:10px;">
+  <a href="/reset-password" style="margin-right:10px;">Change Password</a>
   <button onclick="logout()">Logout</button>
 </div>
           <img src="/logo.png" class="logo">
@@ -800,6 +801,36 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login-page');
   });
+});
+
+app.get('/reset-password', (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect('/login-page');
+  }
+
+  res.send(`
+    <h2>Change Password</h2>
+    <input id="newPassword" type="password" placeholder="New password"><br><br>
+    <button onclick="resetPassword()">Update Password</button>
+
+    <script>
+      async function resetPassword() {
+        const newPassword = document.getElementById('newPassword').value;
+
+        const res = await fetch('/reset-password', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ newPassword })
+        });
+
+        alert(await res.text());
+
+        if (res.ok) {
+          location.href = '/';
+        }
+      }
+    </script>
+  `);
 });
 
 app.post('/add-business', async (req, res) => {
@@ -1189,6 +1220,33 @@ app.post('/login', async (req, res) => {
 
   res.send('Logged in');
 });
+
+app.post('/reset-password', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in first.');
+  }
+
+  const { newPassword } = req.body;
+
+  if (!newPassword || newPassword.length < 6) {
+    return res.status(400).send('Password must be at least 6 characters.');
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+
+  const { error } = await supabase
+    .from('users')
+    .update({ password: hashed })
+    .eq('id', req.session.userId);
+
+  if (error) {
+    console.error('Reset password error:', error.message);
+    return res.status(500).send('Failed to update password.');
+  }
+
+  res.send('Password updated successfully.');
+});
+
 
 app.get('/businesses', async (req, res) => {
   try {
