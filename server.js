@@ -785,6 +785,11 @@ app.get('/signup-page', (req, res) => {
 });
 
 app.post('/add-business', async (req, res) => {
+
+  if (!req.session.userId) {
+  return res.status(401).send('Please log in first.');
+}
+
   const { name, twilioNumber, autoReplyMessage, ownerMobile } = req.body;
 
   if (!name || !twilioNumber || !autoReplyMessage || !ownerMobile) {
@@ -804,7 +809,8 @@ app.post('/add-business', async (req, res) => {
       name,
       twilio_number: cleanedNumber,
       auto_reply_message: autoReplyMessage,
-      owner_mobile: cleanedOwnerMobile
+      owner_mobile: cleanedOwnerMobile,
+      user_id: req.session.userId
     }
   ]);
 
