@@ -8,6 +8,16 @@ const bcrypt = require('bcrypt');
 
 const app = express();
 
+app.get('/businesses', async (req, res) => {
+  const { data, error } = await supabase
+    .from('businesses')
+    .select('*');
+
+  if (error) {
+    console.error('getBusinesses error:', error);
+    return res.status(500).json({ error });
+  }
+
 function validateTwilioRequest(req, res, next) {
   const signature = req.headers['x-twilio-signature'];
 
