@@ -69,10 +69,11 @@ function normaliseBusiness(row) {
   };
 }
 
-async function getBusinesses() {
+async function getBusinesses(userId) {
   const { data, error } = await supabase
     .from('businesses')
     .select('*')
+    .eq('user_id', userId)
     .order('created_at', { ascending: false });
 
   if (error) {
@@ -145,7 +146,7 @@ app.get('/', async (req, res) => {
   return res.redirect('/login-page');
 }
 
-  const businesses = await getBusinesses();
+  const businesses = await getBusinesses(req.session.userId);
   const messages = await getMessages();
 
   const businessCards = businesses
