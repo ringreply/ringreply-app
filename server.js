@@ -526,6 +526,9 @@ const messageCards = Object.values(conversations)
     <body>
       <div class="container">
         <div class="header">
+        <div style="text-align:right; margin-bottom:10px;">
+  <button onclick="logout()">Logout</button>
+</div>
           <img src="/logo.png" class="logo">
           <p>Auto-reply to missed calls instantly</p>
         </div>
@@ -692,6 +695,10 @@ function openConversation(customerNumber, businessId) {
     encodeURIComponent(businessId);
 }
 
+function logout() {
+  window.location.href = '/logout';
+}
+
 async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
   const replyText = document.getElementById('reply-' + messageId).value.trim();
 
@@ -787,6 +794,12 @@ app.get('/signup-page', (req, res) => {
       }
     </script>
   `);
+});
+
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login-page');
+  });
 });
 
 app.post('/add-business', async (req, res) => {
