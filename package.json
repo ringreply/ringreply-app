@@ -1,0 +1,18 @@
+{
+  "name": "ringreply-app",
+  "version": "1.0.0",
+  "description": "Twilio missed call auto-reply app",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.100.0",
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "express": "^4.18.2",
+    "express-session": "^1.19.0",
+    "twilio": "^5.13.1"
+  }
+}
