@@ -5,6 +5,7 @@ const twilio = require('twilio');
 const { createClient } = require('@supabase/supabase-js');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const { Resend } = require('resend');
 
 const app = express();
@@ -757,6 +758,9 @@ app.get('/login-page', (req, res) => {
     <input id="password" type="password" placeholder="Password"><br><br>
     <button type="button" onclick="login()">Login</button>
 
+    <br><br>
+<a href="/forgot-password">Forgot password?</a>
+
     <script>
       async function login() {
         const email = document.getElementById('email').value;
@@ -816,20 +820,66 @@ app.get('/logout', (req, res) => {
 app.get('/forgot-password', (req, res) => {
   res.send(`
     <h2>Forgot Password</h2>
-    <input id="email" placeholder="Email" autocapitalize="none"><br><br>
-    <button type="button" onclick="forgotPassword()">Send Reset Link</button>
+
+    <input id="email" placeholder="Your email"><br><br>
+
+    <button onclick="sendReset()">Send Reset Link</button>
 
     <script>
-      async function forgotPassword() {
+      async function sendReset() {
         const email = document.getElementById('email').value;
 
         const res = await fetch('/forgot-password', {
           method: 'POST',
-          headers: {'Content-Type':'application/json'},
+          headers: {
+            'Content-Type': 'application/json'
+          },
           body: JSON.stringify({ email })
         });
 
         alert(await res.text());
+      }
+    </script>
+  `);
+});
+
+app.get('/reset-password/:token', async (req, res) => {
+  const token = req.params.token;
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('*')
+    .eq('reset_token', token)
+    .single();
+
+  if (!user) {
+    return res.send('Invalid reset link');
+  }
+
+  res.send(`
+    <h2>Choose New Password</h2>
+
+    <input id="password" type="password" placeholder="New password"><br><br>
+
+    <button onclick="resetPassword()">Update Password</button>
+
+    <script>
+      async function resetPassword() {
+        const password = document.getElementById('password').value;
+
+        const res = await fetch('/reset-password/${token}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ password })
+        });
+
+        alert(await res.text());
+
+        if (res.ok) {
+          location.href = '/login-page';
+        }
       }
     </script>
   `);
@@ -1286,34 +1336,74 @@ const password = req.body.password;
 app.post('/forgot-password', async (req, res) => {
   const email = req.body.email.trim().toLowerCase();
 
-  const { data: user, error } = await supabase
+  const { data: user } = await supabase
     .from('users')
     .select('*')
     .eq('email', email)
     .single();
 
-  if (error || !user) {
-    return res.send('If that email exists, a reset link will be sent.');
+  if (!user) {
+    return res.send('If that email exists, a reset link has been sent.');
   }
 
-  const token = require('crypto').randomBytes(32).toString('hex');
+  const token = crypto.randomBytes(32).toString('hex');
 
-  const expiresAt = new Date();
-  expiresAt.setMinutes(expiresAt.getMinutes() + 30);
+  const expires = new Date(Date.now() + 1000 * 60 * 60);
 
-  await supabase.from('password_resets').insert([
-    {
-      user_id: user.id,
-      token,
-      expires_at: expiresAt
-    }
-  ]);
+  await supabase
+    .from('users')
+    .update({
+      reset_token: token,
+      reset_token_expires: expires
+    })
+    .eq('id', user.id);
 
-  const resetLink = `${process.env.PUBLIC_URL}/reset-password?token=${token}`;
+  const resetLink =
+    process.env.PUBLIC_URL + '/reset-password/' + token;
 
-  console.log('PASSWORD RESET LINK:', resetLink);
+  await resend.emails.send({
+    from: 'hello@ringreply.co.uk',
+    to: email,
+    subject: 'Reset your password',
+    html: `
+      <h2>Reset Password</h2>
+      <p>Click below to reset your password:</p>
+      <a href="${resetLink}">${resetLink}</a>
+    `
+  });
 
-  res.send('Reset link created. Check server logs for now.');
+  res.send('Reset link sent');
+});
+
+app.post('/reset-password/:token', async (req, res) => {
+  const token = req.params.token;
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('*')
+    .eq('reset_token', token)
+    .single();
+
+  if (!user) {
+    return res.status(400).send('Invalid token');
+  }
+
+  if (new Date(user.reset_token_expires) < new Date()) {
+    return res.status(400).send('Token expired');
+  }
+
+  const hashed = await bcrypt.hash(req.body.password, 10);
+
+  await supabase
+    .from('users')
+    .update({
+      password: hashed,
+      reset_token: null,
+      reset_token_expires: null
+    })
+    .eq('id', user.id);
+
+  res.send('Password updated');
 });
 
 app.post('/reset-password', async (req, res) => {
