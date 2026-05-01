@@ -277,6 +277,30 @@ const messageCards = Object.values(conversations)
           color: #0f172a;
         }
 
+        .business-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.business-card {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.business-card h3 {
+  margin-top: 0;
+}
+
+.business-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
         .topbar {
   display: flex;
   justify-content: space-between;
@@ -746,6 +770,28 @@ button {
       <span>Customer replies will appear here</span>
     </div>`
   }
+</div>
+
+<h2 style="margin-top:50px;">Your Businesses</h2>
+
+<div class="business-grid">
+  ${businesses.map(b => `
+    <div class="business-card">
+      <h3>${b.name}</h3>
+
+      <p>${b.twilio_number}</p>
+
+      <div class="business-actions">
+        <button onclick="openInbox('${b.id}')">
+          Open Inbox
+        </button>
+
+        <button class="secondary-btn">
+          Edit
+        </button>
+      </div>
+    </div>
+  `).join('')}
 </div>
 
       <script>
