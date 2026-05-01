@@ -1362,7 +1362,7 @@ app.post('/forgot-password', async (req, res) => {
     process.env.PUBLIC_URL + '/reset-password/' + token;
 
   await resend.emails.send({
-    from: 'hello@ringreply.co.uk',
+    from: 'onboarding@resend.dev',
     to: email,
     subject: 'Reset your password',
     html: `
