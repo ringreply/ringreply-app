@@ -277,6 +277,75 @@ const messageCards = Object.values(conversations)
           color: #0f172a;
         }
 
+        .topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  margin-bottom: 30px;
+}
+
+.logo {
+  width: 220px;
+}
+
+.tagline {
+  margin-top: 8px;
+  color: #666;
+  font-size: 15px;
+}
+
+.top-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.secondary-btn {
+  text-decoration: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  font-weight: 600;
+}
+
+.logout-btn {
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: #ffe5e5;
+  color: #c62828;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stats-row {
+  display: flex;
+  gap: 20px;
+  padding: 0 40px;
+  margin-bottom: 30px;
+}
+
+.stat-card {
+  flex: 1;
+  background: white;
+  padding: 25px;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.stat-card h3 {
+  font-size: 32px;
+  margin: 0;
+}
+
+.stat-card p {
+  margin-top: 8px;
+  color: #666;
+}
+
         .container {
           max-width: 1100px;
           margin: 30px auto 60px;
@@ -531,19 +600,40 @@ const messageCards = Object.values(conversations)
             align-items: flex-start;
           }
         }
+
       </style>
     </head>
 
     <body>
       <div class="container">
-        <div class="header">
-        <div style="text-align:right; margin-bottom:10px;">
-  <a href="/reset-password" style="margin-right:10px;">Change Password</a>
-  <button onclick="logout()">Logout</button>
+        <div class="topbar">
+  <div>
+    <img src="/logo.png" class="logo">
+    <p class="tagline">Auto-reply to missed calls instantly</p>
+  </div>
+
+  <div class="top-actions">
+    <a href="/reset-password" class="secondary-btn">Reset Password</a>
+    <button onclick="logout()" class="logout-btn">Logout</button>
+  </div>
 </div>
-          <img src="/logo.png" class="logo">
-          <p>Auto-reply to missed calls instantly</p>
-        </div>
+
+<div class="stats-row">
+  <div class="stat-card">
+    <h3>12</h3>
+    <p>Missed Calls</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>10</h3>
+    <p>Replies Sent</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>1</h3>
+    <p>Businesses</p>
+  </div>
+</div>
 
         <div class="card">
           <h2>Business Setup</h2>
