@@ -752,7 +752,7 @@ app.get('/login-page', (req, res) => {
     <h2>Login</h2>
     <input id="email" placeholder="Email" autocapitalize="none"><br><br>
     <input id="password" type="password" placeholder="Password"><br><br>
-    <button onclick="login()">Login</button>
+    <button type="button" onclick="login()">Login</button>
 
     <script>
       async function login() {
@@ -780,7 +780,7 @@ app.get('/signup-page', (req, res) => {
     <h2>Signup</h2>
     <input id="email" placeholder="Email" autocapitalize="none"><br><br>
     <input id="password" type="password" placeholder="Password"><br><br>
-    <button onclick="signup()">Signup</button>
+    <<button type="button" onclick="signup()">Signup</button>
 
     <script>
       async function signup() {
