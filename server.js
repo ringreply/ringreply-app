@@ -47,6 +47,9 @@ const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.static('public'));
+
+app.set('trust proxy, 1');
+
 app.use(session({
   secret: process.env.SESSION_SECRET || 'change-this-secret',
   resave: false,
