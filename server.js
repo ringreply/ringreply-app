@@ -599,7 +599,51 @@ const messageCards = Object.values(conversations)
             flex-direction: column;
             align-items: flex-start;
           }
-        }
+
+          .card {
+  background: white;
+  border-radius: 18px;
+  padding: 35px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  font-size: 15px;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 14px 20px;
+  border-radius: 12px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.92;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 34px;
+}
+
+.subtext {
+  color: #666;
+  margin-bottom: 30px;
+}
 
       </style>
     </head>
