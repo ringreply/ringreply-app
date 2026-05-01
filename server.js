@@ -682,18 +682,18 @@ button {
 
 <div class="stats-row">
   <div class="stat-card">
-    <h3>12</h3>
-    <p>Missed Calls</p>
-  </div>
-
-  <div class="stat-card">
-    <h3>10</h3>
-    <p>Replies Sent</p>
-  </div>
-
-  <div class="stat-card">
-    <h3>1</h3>
+    <h3>${businesses.length}</h3>
     <p>Businesses</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>${messages.length}</h3>
+    <p>Messages</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>${messages.filter(m => m.direction === 'inbound' && m.read === false).length}</h3>
+    <p>Unread</p>
   </div>
 </div>
 
