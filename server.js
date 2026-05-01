@@ -50,7 +50,11 @@ app.use(express.static('public'));
 app.use(session({
   secret: process.env.SESSION_SECRET || 'change-this-secret',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none'
+  }
 }));
 
 function cleanNumber(number) {
