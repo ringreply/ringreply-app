@@ -645,6 +645,24 @@ h2 {
   margin-bottom: 30px;
 }
 
+.card {
+  padding: 35px !important;
+  border-radius: 18px !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
+}
+
+input,
+textarea,
+select {
+  padding: 14px !important;
+  border-radius: 12px !important;
+}
+
+button {
+  border-radius: 12px !important;
+  padding: 14px 20px !important;
+}
+
       </style>
     </head>
 
