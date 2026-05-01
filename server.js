@@ -5,8 +5,11 @@ const twilio = require('twilio');
 const { createClient } = require('@supabase/supabase-js');
 const session = require('express-session');
 const bcrypt = require('bcrypt');
+const { Resend } = require('resend');
 
 const app = express();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 function validateTwilioRequest(req, res, next) {
   const signature = req.headers['x-twilio-signature'];
