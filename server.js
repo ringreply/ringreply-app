@@ -810,30 +810,78 @@ app.get('/logout', (req, res) => {
   });
 });
 
-app.get('/reset-password', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login-page');
+app.get('/forgot-password', (req, res) => {
+  res.send(`
+    <h2>Forgot Password</h2>
+    <input id="email" placeholder="Email" autocapitalize="none"><br><br>
+    <button type="button" onclick="forgotPassword()">Send Reset Link</button>
+
+    <script>
+      async function forgotPassword() {
+        const email = document.getElementById('email').value;
+
+        const res = await fetch('/forgot-password', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ email })
+        });
+
+        alert(await res.text());
+      }
+    </script>
+  `);
+});
+
+app.get('/reset-password', async (req, res) => {
+  const token = req.query.token;
+
+  if (!token) {
+    return res.send('Invalid reset link.');
+  }
+
+  const { data, error } = await supabase
+    .from('password_resets')
+    .select('*')
+    .eq('token', token)
+    .eq('used', false)
+    .single();
+
+  if (error || !data) {
+    return res.send('Invalid or expired reset link.');
+  }
+
+  if (new Date(data.expires_at) < new Date()) {
+    return res.send('Reset link expired.');
   }
 
   res.send(`
-    <h2>Change Password</h2>
-    <input id="newPassword" type="password" placeholder="New password"><br><br>
-    <button onclick="resetPassword()">Update Password</button>
+    <h2>Set New Password</h2>
+
+    <input id="password" type="password" placeholder="New password"><br><br>
+
+    <button type="button" onclick="resetPassword()">
+      Update Password
+    </button>
 
     <script>
       async function resetPassword() {
-        const newPassword = document.getElementById('newPassword').value;
+        const password = document.getElementById('password').value;
 
         const res = await fetch('/reset-password', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ newPassword })
+          body: JSON.stringify({
+            token: '${token}',
+            password
+          })
         });
 
-        alert(await res.text());
+        const text = await res.text();
+
+        alert(text);
 
         if (res.ok) {
-          location.href = '/';
+          window.location.href = '/login-page';
         }
       }
     </script>
@@ -1232,32 +1280,80 @@ const password = req.body.password;
   res.send('Logged in');
 });
 
-app.post('/reset-password', async (req, res) => {
-  if (!req.session.userId) {
-    return res.status(401).send('Please log in first.');
+app.post('/forgot-password', async (req, res) => {
+  const email = req.body.email.trim().toLowerCase();
+
+  const { data: user, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single();
+
+  if (error || !user) {
+    return res.send('If that email exists, a reset link will be sent.');
   }
 
-  const { newPassword } = req.body;
+  const token = require('crypto').randomBytes(32).toString('hex');
 
-  if (!newPassword || newPassword.length < 6) {
+  const expiresAt = new Date();
+  expiresAt.setMinutes(expiresAt.getMinutes() + 30);
+
+  await supabase.from('password_resets').insert([
+    {
+      user_id: user.id,
+      token,
+      expires_at: expiresAt
+    }
+  ]);
+
+  const resetLink = `${process.env.PUBLIC_URL}/reset-password?token=${token}`;
+
+  console.log('PASSWORD RESET LINK:', resetLink);
+
+  res.send('Reset link created. Check server logs for now.');
+});
+
+app.post('/reset-password', async (req, res) => {
+  const { token, password } = req.body;
+
+  if (!token || !password || password.length < 6) {
     return res.status(400).send('Password must be at least 6 characters.');
   }
 
-  const hashed = await bcrypt.hash(newPassword, 10);
+  const { data: reset, error } = await supabase
+    .from('password_resets')
+    .select('*')
+    .eq('token', token)
+    .eq('used', false)
+    .single();
 
-  const { error } = await supabase
+  if (error || !reset) {
+    return res.status(400).send('Invalid reset link.');
+  }
+
+  if (new Date(reset.expires_at) < new Date()) {
+    return res.status(400).send('Reset link expired.');
+  }
+
+  const hashed = await bcrypt.hash(password, 10);
+
+  const { error: updateError } = await supabase
     .from('users')
     .update({ password: hashed })
-    .eq('id', req.session.userId);
+    .eq('id', reset.user_id);
 
-  if (error) {
-    console.error('Reset password error:', error.message);
+  if (updateError) {
+    console.error('Password update error:', updateError.message);
     return res.status(500).send('Failed to update password.');
   }
 
-  res.send('Password updated successfully.');
-});
+  await supabase
+    .from('password_resets')
+    .update({ used: true })
+    .eq('id', reset.id);
 
+  res.send('Password updated. Please log in.');
+});
 
 app.get('/businesses', async (req, res) => {
   try {
