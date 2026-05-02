@@ -240,7 +240,10 @@ const messageCards = Object.values(conversations)
       <div class="message-card">
         <div class="message-top">
           <div>
-            <h3>${message.customer_number}</h3>
+            <h3 style="margin:0;">
+  ${business ? business.name + ' • ' : ''}
+  ${message.customer_number}
+</h3>
             <p class="message-time">
               ${new Date(message.created_at).toLocaleString()}
             </p>
@@ -620,7 +623,7 @@ button {
         </div>
       </div>
 
-      <div class="card">
+      <div class="card" id="inbox" style="margin-top:30px;">
   <h2>Inbox</h2>
   <p class="subtext">Latest customer replies</p>
   ${
@@ -630,28 +633,6 @@ button {
       <span>Customer replies will appear here</span>
     </div>`
   }
-</div>
-
-<h2 style="margin-top:50px;">Your Businesses</h2>
-
-<div class="business-grid">
-  ${businesses.map(b => `
-    <div class="business-card">
-      <h3>${b.name}</h3>
-
-      <p>${b.twilionumber}</p>
-
-      <div class="business-actions">
-        <button onclick="location.href='inbox'">
-          Open Inbox
-        </button>
-
-        <button class="secondary-btn">
-          Edit
-        </button>
-      </div>
-    </div>
-  `).join('')}
 </div>
 
       <script>
