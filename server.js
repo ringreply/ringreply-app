@@ -924,10 +924,10 @@ button {
     <div class="business-card">
       <h3>${b.name}</h3>
 
-      <p>${b.twilio_number}</p>
+      <p>${b.twilionumber}</p>
 
       <div class="business-actions">
-        <button onclick="openInbox('${b.id}')">
+        <button onclick="location.href='inbox'">
           Open Inbox
         </button>
 
@@ -1130,7 +1130,7 @@ app.get('/signup-page', (req, res) => {
     <h2>Signup</h2>
     <input id="email" placeholder="Email" autocapitalize="none"><br><br>
     <input id="password" type="password" placeholder="Password"><br><br>
-    <<button type="button" onclick="signup()">Signup</button>
+    <button type="button" onclick="signup()">Signup</button>
 
     <script>
       async function signup() {
