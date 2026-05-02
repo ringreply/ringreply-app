@@ -986,11 +986,78 @@ app.get('/logout', (req, res) => {
 
 app.get('/forgot-password', (req, res) => {
   res.send(`
-    <h2>Forgot Password</h2>
+    <style>
+      body {
+        margin: 0;
+        font-family: 'Segoe UI', sans-serif;
+        background: linear-gradient(135deg, #dbeafe, #f8fafc);
+        padding: 30px 18px;
+        color: #0f172a;
+      }
 
-    <input id="email" placeholder="Your email"><br><br>
+      .auth-card {
+        max-width: 420px;
+        margin: 60px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+      }
 
-    <button onclick="sendReset()">Send Reset Link</button>
+      h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+      }
+
+      p {
+        color: #64748b;
+        margin-bottom: 24px;
+      }
+
+      input {
+        width: 100%;
+        padding: 16px;
+        border-radius: 12px;
+        border: 1px solid #dbe2ea;
+        font-size: 16px;
+        box-sizing: border-box;
+        margin-bottom: 16px;
+      }
+
+      button {
+        width: 100%;
+        padding: 16px;
+        border: none;
+        border-radius: 12px;
+        background: #2563eb;
+        color: white;
+        font-weight: 700;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      a {
+        display: block;
+        text-align: center;
+        margin-top: 18px;
+        color: #2563eb;
+        font-weight: 600;
+        text-decoration: none;
+      }
+    </style>
+
+    <div class="auth-card">
+      <h2>Reset Password</h2>
+      <p>Enter your email and we’ll send you a reset link.</p>
+
+      <input id="email" placeholder="Email" autocapitalize="none">
+
+      <button type="button" onclick="sendReset()">
+        Send Reset Link
+      </button>
+
+      <a href="/login-page">Back to login</a>
+    </div>
 
     <script>
       async function sendReset() {
