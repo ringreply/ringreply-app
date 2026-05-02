@@ -765,6 +765,19 @@ button {
   padding: 0 !important;
 }
 
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.topbar {
+  padding-top: 10px;
+}
+
+.stats-row {
+  margin-top: 25px;
+}
+
       </style>
     </head>
 
