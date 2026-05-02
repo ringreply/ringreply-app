@@ -761,6 +761,10 @@ button {
   padding: 0 !important;
 }
 
+.sidebar-logo {
+  padding: 0 !important;
+}
+
       </style>
     </head>
 
