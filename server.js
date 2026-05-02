@@ -237,30 +237,32 @@ const messageCards = Object.values(conversations)
     );
 
     return `
-      <div class="business-card" onclick="openConversation('${message.customer_number}', '${message.business_id}')">
-        <div class="card-header">
+      <div class="message-card">
+        <div class="message-top">
           <div>
             <h3>${message.customer_number}</h3>
-            <span class="badge">
-  ${business ? business.name : ''}
-  ${message.unreadCount > 0 ? ` • ${message.unreadCount} new` : ''}
-</span>
+            <p class="message-time">
+              ${new Date(message.created_at).toLocaleString()}
+            </p>
           </div>
+
+          ${
+            message.unreadCount > 0
+              ? `<span class="unread-badge">${message.unreadCount} new</span>`
+              : ''
+          }
         </div>
 
-        <div class="message-section">
-          <div class="label">Last message</div>
-          <div class="message">${message.message_body}</div>
+        <div class="message-body">
+          ${message.message_body || ''}
         </div>
 
-        <div class="value">${new Date(message.created_at).toLocaleString()}</div>
+        <div class="message-actions">
+          <button onclick="openConversation('${message.customer_number}', '${message.business_id}')">
+            Open Conversation
+          </button>
+        </div>
       </div>
-
-      <div style="margin-top:10px;">
-  <button onclick="openConversation('${message.customer_number}', '${message.business_id}')">
-    Open Conversation
-  </button>
-</div>
     `;
   })
   .join('');
