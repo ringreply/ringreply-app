@@ -719,6 +719,36 @@ button {
     width: 180px;
   }
 
+  @media (max-width: 768px) {
+
+  .topbar {
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .top-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .stats-row {
+    flex-direction: column;
+    padding: 0 20px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  body {
+    padding: 10px;
+  }
+
+  .logo {
+    width: 180px;
+  }
+
 }
 
       </style>
