@@ -778,6 +778,44 @@ button {
   margin-top: 25px;
 }
 
+.message-card {
+  background: white;
+  padding: 22px;
+  border-radius: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.message-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-time {
+  color: #64748b;
+  font-size: 13px;
+}
+
+.message-body {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.message-actions {
+  margin-top: 18px;
+}
+
+.unread-badge {
+  background: #2563eb;
+  color: white;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
       </style>
     </head>
 
