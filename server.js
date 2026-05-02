@@ -769,22 +769,6 @@ button {
     </head>
 
     <body>
-
-<div class="layout">
-
-  <div class="sidebar">
-
-    <img src="/logo.png" class="sidebar-logo">
-
-    <a href="/">Dashboard</a>
-    <a href="#inbox">Inbox</a>
-    <a href="#businesses">Businesses</a>
-    <a href="#analytics">Analytics</a>
-    <a href="/reset-password">Settings</a>
-
-  </div>
-
-  <div class="main-content">
     <div class="container">
         <div class="topbar">
   <div>
@@ -1037,9 +1021,6 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
         }
 
 </script>
-
-</div>
-</div>
   
     </body>
   </html>
