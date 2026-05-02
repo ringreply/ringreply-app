@@ -196,10 +196,10 @@ app.get('/', async (req, res) => {
   <div class="value">${business.ownerMobile || ''}</div>
 </div>
 
-        <div class="message-section">
-          <div class="label">Auto Reply Message</div>
-          <div class="message">${business.autoReplyMessage}</div>
-        </div>
+        <div class="info-box">
+  <div class="label">Auto Reply Message</div>
+  <div class="value">${business.autoReplyMessage}</div>
+</div>
       </div>
     `
     )
