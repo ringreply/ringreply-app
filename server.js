@@ -791,23 +791,26 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
 
 app.get('/login-page', (req, res) => {
   res.send(`
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <style>
   body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #dbeafe, #f8fafc);
-    padding: 30px 18px;
+    padding: 20px;
     color: #0f172a;
   }
 
   .auth-card {
-    max-width: 420px;
-    margin: 60px auto;
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-  }
+  width: 100%;
+  max-width: 420px;
+  margin: 40px auto;
+  background: white;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+  box-sizing: border-box;
+}
 
   h2 {
     margin-top: 0;
@@ -849,9 +852,19 @@ app.get('/login-page', (req, res) => {
 <div class="auth-card">
   <h2>Login</h2>
 
-  <input id="email" placeholder="Email" autocapitalize="none">
+  <input
+  id="email"
+  placeholder="Email"
+  autocapitalize="none"
+  autocomplete="email"
+>
 
-  <input id="password" type="password" placeholder="Password">
+<input
+  id="password"
+  type="password"
+  placeholder="Password"
+  autocomplete="current-password"
+>
 
   <button type="button" onclick="login()">
     Login
@@ -885,23 +898,26 @@ app.get('/login-page', (req, res) => {
 
 app.get('/signup-page', (req, res) => {
   res.send(`
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
         background: linear-gradient(135deg, #dbeafe, #f8fafc);
-        padding: 30px 18px;
+        padding: 20px;
         color: #0f172a;
       }
 
       .auth-card {
-        max-width: 420px;
-        margin: 60px auto;
-        background: white;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-      }
+  width: 100%;
+  max-width: 420px;
+  margin: 40px auto;
+  background: white;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+  box-sizing: border-box;
+}
 
       h2 {
         margin-top: 0;
@@ -943,9 +959,19 @@ app.get('/signup-page', (req, res) => {
     <div class="auth-card">
       <h2>Signup</h2>
 
-      <input id="email" placeholder="Email" autocapitalize="none">
+      <input
+  id="email"
+  placeholder="Email"
+  autocapitalize="none"
+  autocomplete="email"
+>
 
-      <input id="password" type="password" placeholder="Password">
+<input
+  id="password"
+  type="password"
+  placeholder="Password"
+  autocomplete="new-password"
+>
 
       <button type="button" onclick="signup()">
         Signup
@@ -986,23 +1012,26 @@ app.get('/logout', (req, res) => {
 
 app.get('/forgot-password', (req, res) => {
   res.send(`
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
       body {
         margin: 0;
         font-family: 'Segoe UI', sans-serif;
         background: linear-gradient(135deg, #dbeafe, #f8fafc);
-        padding: 30px 18px;
+        padding: 20px;
         color: #0f172a;
       }
 
       .auth-card {
-        max-width: 420px;
-        margin: 60px auto;
-        background: white;
-        padding: 30px;
-        border-radius: 20px;
-        box-shadow: 0 8px 24px rgba(15,23,42,0.08);
-      }
+  width: 100%;
+  max-width: 420px;
+  margin: 40px auto;
+  background: white;
+  padding: 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+  box-sizing: border-box;
+}
 
       h2 {
         margin-top: 0;
@@ -1050,7 +1079,12 @@ app.get('/forgot-password', (req, res) => {
       <h2>Reset Password</h2>
       <p>Enter your email and we’ll send you a reset link.</p>
 
-      <input id="email" placeholder="Email" autocapitalize="none">
+      <input
+  id="email"
+  placeholder="Email"
+  autocapitalize="none"
+  autocomplete="email"
+>
 
       <button type="button" onclick="sendReset()">
         Send Reset Link
