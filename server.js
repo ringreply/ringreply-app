@@ -621,7 +621,6 @@ button {
             </div>`
           }
         </div>
-      </div>
 
       <div class="card" id="inbox" style="margin-top:30px;">
   <h2>Inbox</h2>
