@@ -816,6 +816,22 @@ button {
   font-weight: 700;
 }
 
+.message-card {
+  border-left: 6px solid #2563eb;
+  transition: 0.2s ease;
+}
+
+.message-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.message-body {
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 12px;
+}
+
       </style>
     </head>
 
