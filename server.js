@@ -749,6 +749,16 @@ button {
     width: 180px;
   }
 
+  .sidebar {
+  display: none !important;
+}
+
+.layout {
+  display: block !important;
+}
+
+.main-content {
+  padding: 0 !important;
 }
 
       </style>
