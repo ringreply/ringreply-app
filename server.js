@@ -273,41 +273,22 @@ const messageCards = Object.values(conversations)
       <title>RingReply</title>
       <style>
         body {
-          margin: 0;
-          font-family: 'Segoe UI', sans-serif;
-          background: linear-gradient(135deg, #dbeafe, #f8fafc);
-          color: #0f172a;
-        }
-
-        .business-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #dbeafe, #f8fafc);
+  color: #0f172a;
 }
 
-.business-card {
-  background: white;
-  padding: 25px;
-  border-radius: 18px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+.container {
+  max-width: 1200px;
+  margin: 30px auto 60px;
+  padding: 20px;
 }
 
-.business-card h3 {
-  margin-top: 0;
-}
-
-.business-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-        .topbar {
+.topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 40px;
   margin-bottom: 30px;
 }
 
@@ -317,7 +298,7 @@ const messageCards = Object.values(conversations)
 
 .tagline {
   margin-top: 8px;
-  color: #666;
+  color: #475569;
   font-size: 15px;
 }
 
@@ -350,16 +331,21 @@ const messageCards = Object.values(conversations)
 .stats-row {
   display: flex;
   gap: 20px;
-  padding: 0 40px;
   margin-bottom: 30px;
+}
+
+.stat-card,
+.card,
+.business-card,
+.message-card {
+  background: white;
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
 }
 
 .stat-card {
   flex: 1;
-  background: white;
-  padding: 25px;
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
 }
 
 .stat-card h3 {
@@ -369,445 +355,114 @@ const messageCards = Object.values(conversations)
 
 .stat-card p {
   margin-top: 8px;
-  color: #666;
+  color: #64748b;
 }
 
-        .container {
-          max-width: 1100px;
-          margin: 30px auto 60px;
-          padding: 20px;
-        }
-
-        .header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-
-        .logo {
-          width: 220px;
-          display: block;
-          margin: 0 auto 14px;
-        }
-
-        .header p {
-          color: #475569;
-          margin: 0;
-          font-size: 18px;
-        }
-
-        .card {
-          background: rgba(255, 255, 255, 0.92);
-          border-radius: 24px;
-          padding: 32px;
-          box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
-          margin-bottom: 28px;
-          border: 1px solid rgba(255,255,255,0.5);
-          backdrop-filter: blur(8px);
-        }
-
-        h2 {
-          margin: 0 0 10px;
-          font-size: 28px;
-        }
-
-        .subtext {
-          color: #64748b;
-          margin-bottom: 26px;
-          font-size: 16px;
-        }
-
-        label {
-          display: block;
-          margin-top: 16px;
-          margin-bottom: 8px;
-          font-weight: 700;
-          font-size: 15px;
-          color: #1e293b;
-        }
-
-        input, textarea {
-          width: 100%;
-          padding: 18px 20px;
-          border-radius: 18px;
-          border: 1px solid #dbe2ea;
-          margin-bottom: 14px;
-          box-sizing: border-box;
-          font-size: 16px;
-          background: rgba(255,255,255,0.9);
-          color: #0f172a;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-          color: #94a3b8;
-        }
-
-        input:focus,
-        textarea:focus {
-          outline: none;
-          border: 1px solid #4f46e5;
-          box-shadow: 0 0 0 4px rgba(79,70,229,0.10);
-        }
-
-        textarea {
-          min-height: 130px;
-          resize: vertical;
-        }
-
-        .button-row {
-          margin-top: 10px;
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        button {
-          padding: 16px 26px;
-          border: none;
-          border-radius: 16px;
-          cursor: pointer;
-          font-weight: 700;
-          font-size: 16px;
-          transition: all 0.2s ease;
-        }
-
-        button:hover {
-          transform: translateY(-1px);
-          opacity: 0.96;
-        }
-
-        .primary {
-          background: linear-gradient(135deg, #4f46e5, #2563eb);
-          color: white;
-          box-shadow: 0 10px 24px rgba(79, 70, 229, 0.28);
-        }
-
-        .secondary {
-          background: transparent;
-          color: #1e293b;
-        }
-
-        #status {
-          margin-top: 16px;
-          font-weight: 700;
-          padding: 10px 14px;
-          border-radius: 12px;
-          display: inline-block;
-          min-height: 20px;
-        }
-
-        .status-success {
-          color: #166534;
-          background: #dcfce7;
-        }
-
-        .status-error {
-          color: #991b1b;
-          background: #fee2e2;
-        }
-
-        .business-card {
-          border: 1px solid #e2e8f0;
-          border-radius: 20px;
-          padding: 20px;
-          margin-top: 16px;
-          background: white;
-          box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
-        }
-
-        .card-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 12px;
-          margin-bottom: 16px;
-        }
-
-        .card-header h3 {
-          margin: 0;
-          font-size: 22px;
-        }
-
-        .badge {
-          display: inline-block;
-          margin-top: 8px;
-          background: #dcfce7;
-          padding: 5px 12px;
-          border-radius: 999px;
-          font-size: 12px;
-          color: #166534;
-          font-weight: 700;
-        }
-
-        .actions button {
-          margin-left: 8px;
-        }
-
-        .edit {
-          background: #0ea5e9;
-          color: white;
-          padding: 10px 16px;
-          font-size: 14px;
-          border-radius: 12px;
-        }
-
-        .delete {
-          background: #dc2626;
-          color: white;
-          padding: 10px 16px;
-          font-size: 14px;
-          border-radius: 12px;
-        }
-
-        .info-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 14px;
-          margin-bottom: 14px;
-        }
-
-        .info-box {
-          background: #f8fafc;
-          padding: 14px;
-          border-radius: 14px;
-          border: 1px solid #e2e8f0;
-        }
-
-        .label {
-          font-size: 12px;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.04em;
-          margin-bottom: 8px;
-          font-weight: 700;
-        }
-
-        .value {
-          font-size: 15px;
-          color: #0f172a;
-          word-break: break-word;
-        }
-
-        .message {
-          background: #f8fafc;
-          padding: 14px;
-          border-radius: 14px;
-          margin-top: 10px;
-          border: 1px solid #e2e8f0;
-          line-height: 1.5;
-        }
-
-        .empty {
-          text-align: center;
-          padding: 34px;
-          color: #64748b;
-        }
-
-        @media (max-width: 700px) {
-          .info-grid {
-            grid-template-columns: 1fr;
-          }
-
-          .card-header {
-            flex-direction: column;
-          }
-
-          .actions {
-            width: 100%;
-          }
-
-          .actions button {
-            width: 100%;
-            margin: 8px 0 0 0;
-          }
-
-          .button-row {
-            flex-direction: column;
-            align-items: flex-start;
-          }
-
-          .card {
-  background: white;
-  border-radius: 18px;
-  padding: 35px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
-
-input,
-textarea,
-select {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-  font-size: 15px;
-  margin-top: 8px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-}
-
-button {
-  padding: 14px 20px;
-  border-radius: 12px;
-  border: none;
-  background: #2563eb;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-button:hover {
-  opacity: 0.92;
+.card {
+  margin-bottom: 28px;
 }
 
 h2 {
   margin-top: 0;
-  font-size: 34px;
+  font-size: 32px;
 }
 
 .subtext {
-  color: #666;
-  margin-bottom: 30px;
+  color: #64748b;
+  margin-bottom: 28px;
+  font-size: 17px;
 }
 
-.card {
-  padding: 35px !important;
-  border-radius: 18px !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06) !important;
+label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 input,
-textarea,
-select {
-  padding: 14px !important;
-  border-radius: 12px !important;
+textarea {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid #dbe2ea;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 130px;
+  resize: vertical;
 }
 
 button {
-  border-radius: 12px !important;
-  padding: 14px 20px !important;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
 }
 
-@media (max-width: 768px) {
-
-  .topbar {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-
-  .top-actions {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .stats-row {
-    flex-direction: column;
-    padding: 0 20px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  body {
-    padding: 10px;
-  }
-
-  .logo {
-    width: 180px;
-  }
-
-  @media (max-width: 768px) {
-
-  .topbar {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-
-  .top-actions {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .stats-row {
-    flex-direction: column;
-    padding: 0 20px;
-  }
-
-  .card {
-    padding: 20px;
-  }
-
-  body {
-    padding: 10px;
-  }
-
-  .logo {
-    width: 180px;
-  }
-
-  .sidebar {
-  display: none !important;
+.primary {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
+  color: white;
+  box-shadow: 0 10px 24px rgba(79,70,229,0.28);
 }
 
-.layout {
-  display: block !important;
+.secondary {
+  background: transparent;
+  color: #1e293b;
 }
 
-.main-content {
-  padding: 0 !important;
-}
-
-.sidebar-logo {
-  padding: 0 !important;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.topbar {
-  padding-top: 10px;
-}
-
-.stats-row {
-  margin-top: 25px;
-}
-
-.message-card {
-  background: white;
-  padding: 22px;
-  border-radius: 18px;
-  margin-bottom: 18px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-}
-
-.message-top {
+.button-row {
   display: flex;
-  justify-content: space-between;
+  gap: 16px;
   align-items: center;
 }
 
-.message-time {
-  color: #64748b;
-  font-size: 13px;
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
+.info-box,
 .message-body {
-  margin-top: 16px;
-  font-size: 16px;
-  line-height: 1.5;
+  background: #f8fafc;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
 }
 
-.message-actions {
-  margin-top: 18px;
+.label {
+  font-size: 12px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+  font-weight: 700;
 }
 
+.value {
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.card-header,
+.message-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.badge,
 .unread-badge {
+  display: inline-block;
   background: #2563eb;
   color: white;
   padding: 6px 10px;
@@ -818,18 +473,78 @@ button {
 
 .message-card {
   border-left: 6px solid #2563eb;
-  transition: 0.2s ease;
+  margin-bottom: 18px;
 }
 
-.message-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+.message-time {
+  color: #64748b;
+  font-size: 13px;
 }
 
-.message-body {
-  background: #f8fafc;
-  padding: 14px;
-  border-radius: 12px;
+.message-actions {
+  margin-top: 18px;
+}
+
+.business-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.empty {
+  text-align: center;
+  padding: 34px;
+  color: #64748b;
+}
+
+.status-success {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.status-error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 14px;
+    margin: 0;
+  }
+
+  .topbar {
+    flex-direction: column;
+    gap: 18px;
+    text-align: center;
+  }
+
+  .top-actions {
+    justify-content: center;
+  }
+
+  .stats-row {
+    flex-direction: column;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .card,
+  .business-card,
+  .message-card {
+    padding: 22px;
+  }
+
+  .logo {
+    width: 180px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
 }
 
       </style>
