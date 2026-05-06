@@ -1455,18 +1455,106 @@ if (ownedBusinessError || !ownedBusiness) {
 
   res.send(`
     <html>
-      <body style="font-family: Arial, sans-serif; padding: 20px; background:#f8fafc;">
-        <a href="/">← Back to inbox</a>
-        <h2>Conversation with ${customer}</h2>
 
-        <div id="chat" style="max-width:700px; max-height:70vh; overflow-y:auto;">
+    <head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+  }
+
+  .chat-page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 18px;
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .chat-box {
+    max-height: 70vh;
+    overflow-y: auto;
+    padding: 10px 0;
+  }
+
+  .reply-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+    position: sticky;
+    bottom: 0;
+    background: #f8fafc;
+    padding: 12px 0;
+  }
+
+  #reply {
+    flex: 1;
+    min-height: 56px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid #dbe2ea;
+    font-size: 16px;
+    resize: vertical;
+  }
+
+  .send-btn {
+    padding: 0 20px;
+    border: none;
+    border-radius: 14px;
+    background: #2563eb;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+  }
+
+  @media (max-width: 768px) {
+    .chat-page {
+      padding: 14px;
+    }
+
+    h2 {
+      font-size: 22px;
+    }
+
+    .chat-box {
+      max-height: 68vh;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+        <div class="chat-page">
+  <a class="back-link" href="/">← Back to inbox</a>
+  <h2>Conversation with ${customer}</h2>
+
+  <div id="chat" class="chat-box">
+
           ${messagesHtml || '<p>No messages yet.</p>'}
           </div>
 
-          <div style="margin-top:20px; display:flex; gap:10px;">
-  <textarea id="reply" placeholder="Type reply..." style="flex:1; min-height:60px;"></textarea>
-  <button onclick="sendReply()" style="padding:12px 20px;">Send</button>
-        </div>
+          <div class="reply-row">
+  <textarea
+    id="reply"
+    placeholder="Type reply..."
+    autocomplete="on"
+  ></textarea>
+
+  <button class="send-btn" onclick="sendReply()">
+    Send
+  </button>
+</div>
 
         <script>
 
