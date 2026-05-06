@@ -1427,28 +1427,22 @@ if (ownedBusinessError || !ownedBusiness) {
   const isOutbound = msg.direction === 'outbound';
 
   return `
-    <div style="
-      display:flex;
-      justify-content:${isOutbound ? 'flex-end' : 'flex-start'};
-      margin-bottom:12px;
-    ">
-      <div style="
-        max-width:70%;
-        padding:12px 14px;
-        border-radius:16px;
-        background:${isOutbound ? '#dcfce7' : '#e0f2fe'};
-        border-bottom-${isOutbound ? 'right' : 'left'}-radius:4px;
-      ">
-        <div style="font-weight:700; margin-bottom:4px;">
-          ${isOutbound ? 'You' : 'Customer'}
-        </div>
-        <div>${msg.message_body || ''}</div>
-        <small style="display:block; margin-top:6px; color:#64748b;">
-          ${new Date(msg.created_at).toLocaleString()}
-        </small>
+  <div class="message-row ${isOutbound ? 'outbound' : 'inbound'}">
+    <div class="message-bubble">
+      <div class="message-sender">
+        ${isOutbound ? 'You' : 'Customer'}
+      </div>
+
+      <div class="message-text">
+        ${msg.message_body || ''}
+      </div>
+
+      <div class="message-time">
+        ${new Date(msg.created_at).toLocaleString()}
       </div>
     </div>
-  `;
+  </div>
+`;
 }).join('');
 
   const twilioNumber = data && data[0] ? data[0].twilio_number : '';
@@ -1516,6 +1510,55 @@ if (ownedBusinessError || !ownedBusiness) {
     font-weight: 700;
     font-size: 16px;
   }
+
+  .message-row {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.message-row.outbound {
+  justify-content: flex-end;
+}
+
+.message-row.inbound {
+  justify-content: flex-start;
+}
+
+.message-bubble {
+  max-width: 78%;
+  padding: 14px;
+  border-radius: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.outbound .message-bubble {
+  background: #2563eb;
+  color: white;
+  border-bottom-right-radius: 6px;
+}
+
+.inbound .message-bubble {
+  background: white;
+  color: #0f172a;
+  border-bottom-left-radius: 6px;
+}
+
+.message-sender {
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.message-text {
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.message-time {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.7;
+}
 
   @media (max-width: 768px) {
     .chat-page {
