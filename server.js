@@ -550,6 +550,47 @@ button {
   }
 }
 
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.logo-text {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 800;
+  color: #2563eb;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.user-email {
+  color: #475569;
+  font-size: 14px;
+}
+
+.logout-btn {
+  background: #0f172a;
+  color: white;
+  text-decoration: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
       </style>
     </head>
 
@@ -557,13 +598,16 @@ button {
     <div class="container">
         <div class="topbar">
   <div>
-    <img src="/logo.png" class="logo">
+    <h1 class="logo-text">RingReply</h1>
     <p class="tagline">Auto-reply to missed calls instantly</p>
   </div>
 
   <div class="top-actions">
-    <a href="/reset-password" class="secondary-btn">Reset Password</a>
-    <button onclick="logout()" class="logout-btn">Logout</button>
+    <span class="user-email">${email}</span>
+
+    <a href="/logout" class="logout-btn">
+      Logout
+    </a>
   </div>
 </div>
 
