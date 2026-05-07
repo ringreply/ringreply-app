@@ -180,7 +180,7 @@ return `
         <div class="card-header">
           <div>
             <h3>${business.name}</h3>
-            <span class="badge">
+            <span class="badge ${unreadCount > 0 ? 'unread' : 'active'}">
   ${unreadCount > 0 ? unreadCount + ' unread' : 'Active'}
 </span>
           </div>
@@ -473,15 +473,23 @@ button {
   margin-bottom: 16px;
 }
 
-.badge,
-.unread-badge {
+.badge {
   display: inline-block;
-  background: #2563eb;
-  color: white;
-  padding: 6px 10px;
+  margin-top: 8px;
+  padding: 5px 12px;
   border-radius: 999px;
   font-size: 12px;
   font-weight: 700;
+}
+
+.badge.active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badge.unread {
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .message-card {
