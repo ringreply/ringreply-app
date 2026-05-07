@@ -1511,6 +1511,11 @@ if (ownedBusinessError || !ownedBusiness) {
     font-size: 16px;
   }
 
+  .send-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
   .message-row {
   display: flex;
   margin-bottom: 14px;
@@ -1616,7 +1621,13 @@ if (chat) {
 }, 30000);
 
           async function sendReply() {
-            const replyText = document.getElementById('reply').value.trim();
+            const replyBox = document.getElementById('reply');
+const sendBtn = document.querySelector('.send-btn');
+
+const replyText = replyBox.value.trim();
+
+sendBtn.innerText = 'Sending...';
+sendBtn.disabled = true;
 
             if (!replyText) {
               alert('Type a reply first');
@@ -1640,7 +1651,9 @@ if (chat) {
             if (res.ok) {
               location.reload();
             }
-          }
+
+            sendBtn.innerText = 'Send';
+sendBtn.disabled = false;
         </script>
       </body>
     </html>
