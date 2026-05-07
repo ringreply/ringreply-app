@@ -598,12 +598,11 @@ button {
     <div class="container">
         <div class="topbar">
   <div>
-    <h1 class="logo-text">RingReply</h1>
+    <img src="/logo.png" class="logo">
     <p class="tagline">Auto-reply to missed calls instantly</p>
   </div>
 
   <div class="top-actions">
-
     <a href="/logout" class="logout-btn">
       Logout
     </a>
