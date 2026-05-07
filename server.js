@@ -166,12 +166,23 @@ app.get('/', async (req, res) => {
   
   const businessCards = businesses
     .map(
-      (business) => `
+      (business) => {
+      const unreadCount = messages.filter(
+  m =>
+    String(m.business_id) === String(business.id) &&
+    m.direction === 'inbound' &&
+    m.read === false
+).length;
+
+return `
+
       <div class="business-card">
         <div class="card-header">
           <div>
             <h3>${business.name}</h3>
-            <span class="badge">Active</span>
+            <span class="badge">
+  ${unreadCount > 0 ? unreadCount + ' unread' : 'Active'}
+</span>
           </div>
           <div class="actions">
             <button class="edit" onclick="editBusiness('${business.id}')">Edit</button>
@@ -201,9 +212,8 @@ app.get('/', async (req, res) => {
   <div class="value">${business.autoReplyMessage}</div>
 </div>
       </div>
-    `
-    )
-    .join('');
+    `;
+}).join('');
 
   const conversations = {};
 
