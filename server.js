@@ -1621,39 +1621,42 @@ if (chat) {
 }, 30000);
 
           async function sendReply() {
-            const replyBox = document.getElementById('reply');
-const sendBtn = document.querySelector('.send-btn');
+  const replyBox = document.getElementById('reply');
+  const sendBtn = document.querySelector('.send-btn');
 
-const replyText = replyBox.value.trim();
+  const replyText = replyBox.value.trim();
 
-sendBtn.innerText = 'Sending...';
-sendBtn.disabled = true;
+  if (!replyText) {
+    alert('Type a reply first');
+    return;
+  }
 
-            if (!replyText) {
-              alert('Type a reply first');
-              return;
-            }
+  sendBtn.innerText = 'Sending...';
+  sendBtn.disabled = true;
 
-            const res = await fetch('/send-reply', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                customerNumber: '${customer}',
-                twilioNumber: '${twilioNumber}',
-                replyText,
-                businessId: '${business}'
-              })
-            });
+  const res = await fetch('/send-reply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customerNumber: '${customer}',
+      twilioNumber: '${twilioNumber}',
+      replyText,
+      businessId: '${business}'
+    })
+  });
 
-            const text = await res.text();
-            alert(text);
+  const text = await res.text();
+  alert(text);
 
-            if (res.ok) {
-              location.reload();
-            }
+  if (res.ok) {
+    location.reload();
+    return;
+  }
 
-            sendBtn.innerText = 'Send';
-sendBtn.disabled = false;
+  sendBtn.innerText = 'Send';
+  sendBtn.disabled = false;
+}
+
         </script>
       </body>
     </html>
