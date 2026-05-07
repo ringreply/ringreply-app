@@ -180,7 +180,10 @@ return `
         <div class="card-header">
           <div>
             <h3>${business.name}</h3>
-            <span class="badge ${unreadCount > 0 ? 'unread' : 'active'}">
+            <span
+  class="badge ${unreadCount > 0 ? 'unread' : 'active'}"
+  data-business-id="${business.id}"
+>
   ${unreadCount > 0 ? unreadCount + ' unread' : 'Active'}
 </span>
           </div>
@@ -841,6 +844,35 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
           document.getElementById('status').innerText = '';
           document.getElementById('status').className = '';
         }
+
+        async function refreshDashboardStatus() {
+  try {
+    const res = await fetch('/dashboard-status');
+    if (!res.ok) return;
+
+    const statuses = await res.json();
+
+    statuses.forEach((status) => {
+      const badge = document.querySelector(
+        '[data-business-id="' + status.id + '"]'
+      );
+
+      if (!badge) return;
+
+      if (status.unreadCount > 0) {
+        badge.innerText = status.unreadCount + ' unread';
+        badge.className = 'badge unread';
+      } else {
+        badge.innerText = 'Active';
+        badge.className = 'badge active';
+      }
+    });
+  } catch (err) {
+    console.log('Dashboard status refresh failed', err);
+  }
+}
+
+setInterval(refreshDashboardStatus, 15000);
 
 </script>
   
