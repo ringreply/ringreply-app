@@ -603,7 +603,6 @@ button {
   </div>
 
   <div class="top-actions">
-    <span class="user-email">${email}</span>
 
     <a href="/logout" class="logout-btn">
       Logout
