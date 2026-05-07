@@ -1941,6 +1941,32 @@ app.get('/businesses', async (req, res) => {
   }
 });
 
+app.get('/dashboard-status', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  const businesses = await getBusinesses(req.session.userId);
+  const businessIds = businesses.map(b => b.id);
+  const messages = await getMessages(businessIds);
+
+  const statuses = businesses.map((business) => {
+    const unreadCount = messages.filter(
+      m =>
+        String(m.business_id) === String(business.id) &&
+        m.direction === 'inbound' &&
+        m.read === false
+    ).length;
+
+    return {
+      id: business.id,
+      unreadCount
+    };
+  });
+
+  res.json(statuses);
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
