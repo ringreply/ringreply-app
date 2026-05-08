@@ -642,8 +642,8 @@ button {
   </div>
 
   <div class="stat-card">
-    <h3>${messages.filter(m => m.direction === 'inbound' && m.read === false).length}</h3>
-    <p>Unread</p>
+    <h3 id="unreadStat">${messages.filter(m => m.direction === 'inbound' && m.read === false).length}</h3>
+<p>Unread</p>
   </div>
 </div>
 
@@ -851,6 +851,16 @@ async function sendReply(messageId, customerNumber, twilioNumber, businessId) {
     if (!res.ok) return;
 
     const statuses = await res.json();
+
+    const totalUnread = statuses.reduce(
+  (sum, status) => sum + status.unreadCount,
+  0
+);
+
+const unreadStat = document.getElementById('unreadStat');
+if (unreadStat) {
+  unreadStat.innerText = totalUnread;
+}
 
     statuses.forEach((status) => {
       const badge = document.querySelector(
