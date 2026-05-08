@@ -533,7 +533,7 @@ button {
 }
 
 .latest-message .message-bubble {
-  animation: highlightMessage 2s ease;
+  animation: highlightMessage 10s ease;
 }
 
 @keyframes highlightMessage {
@@ -544,7 +544,7 @@ button {
 
   30% {
     transform: scale(1.02);
-    box-shadow: 0 0 18px rgba(37,99,235,0.35);
+    box-shadow: 0 0 34px rgba(37,99,235,0.9);
   }
 
   100% {
