@@ -2009,6 +2009,31 @@ app.get('/dashboard-status', async (req, res) => {
   res.json(statuses);
 });
 
+app.get('/conversation-messages', async (req, res) => {
+  const { customer, business } = req.query;
+
+  if (!req.session.userId) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  if (!customer || !business) {
+    return res.status(400).json({ error: 'Missing details' });
+  }
+
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('customer_number', customer)
+    .eq('business_id', business)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json(data || []);
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
