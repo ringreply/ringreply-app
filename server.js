@@ -1710,6 +1710,22 @@ if (ownedBusinessError || !ownedBusiness) {
   <a class="back-link" href="/">← Back to inbox</a>
   <h2>Conversation with ${customer}</h2>
 
+<div
+  id="newMessageBanner"
+  style="
+    display:none;
+    background:#2563eb;
+    color:white;
+    padding:12px 16px;
+    border-radius:12px;
+    margin-bottom:14px;
+    font-weight:700;
+    text-align:center;
+  "
+>
+  New message received
+</div>
+
   <div id="chat" class="chat-box">
 
           ${messagesHtml || '<p>No messages yet.</p>'}
@@ -1747,8 +1763,16 @@ async function refreshConversation() {
     const messages = await res.json();
 
     if (messages.length !== lastMessageCount) {
-      location.reload();
-    }
+  const banner = document.getElementById('newMessageBanner');
+
+  if (banner) {
+    banner.style.display = 'block';
+  }
+
+  setTimeout(() => {
+    location.reload();
+  }, 1500);
+}
   } catch (err) {
     console.log('Conversation refresh failed', err);
   }
