@@ -532,6 +532,27 @@ button {
   background: #fee2e2;
 }
 
+.latest-message .message-bubble {
+  animation: highlightMessage 2s ease;
+}
+
+@keyframes highlightMessage {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 rgba(37,99,235,0);
+  }
+
+  30% {
+    transform: scale(1.02);
+    box-shadow: 0 0 18px rgba(37,99,235,0.35);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 14px;
@@ -1529,7 +1550,7 @@ if (ownedBusinessError || !ownedBusiness) {
   const isOutbound = msg.direction === 'outbound';
 
   return `
-  <div class="message-row ${isOutbound ? 'outbound' : 'inbound'}">
+  <div class="message-row ${isOutbound ? 'outbound' : 'inbound'} ${msg === data[data.length - 1] ? 'latest-message' : ''}">
     <div class="message-bubble">
       <div class="message-sender">
         ${isOutbound ? 'You' : 'Customer'}
