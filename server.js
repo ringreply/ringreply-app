@@ -1713,6 +1713,28 @@ if (chat) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+let lastMessageCount = document.querySelectorAll('.message-row').length;
+
+async function refreshConversation() {
+  try {
+    const res = await fetch(
+      '/conversation-messages?customer=${encodeURIComponent(customer)}&business=${encodeURIComponent(business)}'
+    );
+
+    if (!res.ok) return;
+
+    const messages = await res.json();
+
+    if (messages.length !== lastMessageCount) {
+      location.reload();
+    }
+  } catch (err) {
+    console.log('Conversation refresh failed', err);
+  }
+}
+
+setInterval(refreshConversation, 10000);
+
   setTimeout(() => {
   const active = document.activeElement;
 
