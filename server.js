@@ -680,6 +680,14 @@ button {
           <label>Twilio Number</label>
 <input id="twilioNumber" placeholder="+447...">
 
+<button
+  type="button"
+  class="secondary"
+  onclick="window.open('/call-forwarding-help', '_blank')"
+>
+  How to forward missed calls
+</button>
+
 <label>Owner Mobile</label>
 <input id="ownerMobile" placeholder="+447..." onblur="updateAutoMessage()">
 
@@ -1878,9 +1886,12 @@ const password = req.body.password;
 
   const { error } = await supabase.from('users').insert([
     {
-      email,
-      password: hashed
-    }
+  email,
+  password: hashed,
+  trial_started_at: new Date(),
+  trial_ends_at: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+  subscription_status: 'trial'
+}
   ]);
 
   if (error) {
@@ -2099,6 +2110,41 @@ app.get('/conversation-messages', async (req, res) => {
   }
 
   res.json(data || []);
+});
+
+app.get('/call-forwarding-help', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>Call Forwarding Setup</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      </head>
+      <body style="font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 20px; line-height: 1.6;">
+        <h1>How to forward missed calls to RingReply</h1>
+        <p>RingReply works by forwarding unanswered calls to your RingReply number.</p>
+
+        <h2>iPhone</h2>
+        <ol>
+          <li>Open Settings</li>
+          <li>Tap Phone</li>
+          <li>Tap Call Forwarding</li>
+          <li>Enable Call Forwarding</li>
+          <li>Enter your RingReply number</li>
+        </ol>
+
+        <h2>Android</h2>
+        <ol>
+          <li>Open Phone app</li>
+          <li>Tap Settings</li>
+          <li>Tap Calling Accounts</li>
+          <li>Tap Call Forwarding</li>
+          <li>Forward unanswered calls to your RingReply number</li>
+        </ol>
+
+        <p><strong>Important:</strong> Forward unanswered/missed calls only, not all calls.</p>
+      </body>
+    </html>
+  `);
 });
 
 const PORT = process.env.PORT || 3000;
