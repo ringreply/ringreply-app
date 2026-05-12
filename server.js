@@ -682,10 +682,21 @@ button {
 
 <button
   type="button"
-  class="secondary"
   onclick="window.open('/call-forwarding-help', '_blank')"
+  style="
+    width:100%;
+    margin-top:12px;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    background:#eff6ff;
+    color:#2563eb;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+  "
 >
-  How to forward missed calls
+  📞 How to forward missed calls
 </button>
 
 <label>Owner Mobile</label>
