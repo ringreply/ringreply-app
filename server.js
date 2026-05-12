@@ -923,7 +923,7 @@ setInterval(refreshDashboardStatus, 15000);
 ">
   Need help?
   <a
-    href="mailto:support@ringreply.co.uk"
+    href="mailto:hello@ringreply.co.uk"
     style="color:#2563eb; text-decoration:none;"
   >
     Contact support
