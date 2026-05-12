@@ -2129,7 +2129,7 @@ app.get('/call-forwarding-help', (req, res) => {
           <li>Tap Phone</li>
           <li>Tap Call Forwarding</li>
           <li>Enable Call Forwarding</li>
-          <li>Enter your RingReply number</li>
+          <li>Enter your RingReply number (starting with +44)</li>
         </ol>
 
         <h2>Android</h2>
@@ -2138,7 +2138,7 @@ app.get('/call-forwarding-help', (req, res) => {
           <li>Tap Settings</li>
           <li>Tap Calling Accounts</li>
           <li>Tap Call Forwarding</li>
-          <li>Forward unanswered calls to your RingReply number</li>
+          <li>Forward unanswered calls to your RingReply number (starting with +44)</li>
         </ol>
 
         <p><strong>Important:</strong> Forward unanswered/missed calls only, not all calls.</p>
