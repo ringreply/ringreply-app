@@ -914,6 +914,21 @@ if (unreadStat) {
 setInterval(refreshDashboardStatus, 15000);
 
 </script>
+
+<footer style="
+  text-align:center;
+  padding:30px 20px;
+  color:#64748b;
+  font-size:14px;
+">
+  Need help?
+  <a
+    href="mailto:support@ringreply.co.uk"
+    style="color:#2563eb; text-decoration:none;"
+  >
+    Contact support
+  </a>
+</footer>
   
     </body>
   </html>
@@ -1835,22 +1850,6 @@ setInterval(refreshConversation, 10000);
 }
 
         </script>
-
-        <footer style="
-  text-align:center;
-  padding:30px 20px;
-  color:#64748b;
-  font-size:14px;
-">
-  Need help?
-  <a
-    href="mailto:support@ringreply.co.uk"
-    style="color:#2563eb; text-decoration:none;"
-  >
-    Contact support
-  </a>
-</footer>
-
       </body>
     </html>
   `);
