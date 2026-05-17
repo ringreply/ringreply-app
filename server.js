@@ -161,6 +161,13 @@ app.get('/', async (req, res) => {
 }
 
   const businesses = await getBusinesses(req.session.userId);
+
+  const { data: currentUser } = await supabase
+  .from('users')
+  .select('*')
+  .eq('id', req.session.userId)
+  .single();
+
   const businessIds = businesses.map(b => b.id);
   const messages = await getMessages(businessIds);
   
