@@ -170,6 +170,22 @@ app.get('/', async (req, res) => {
 
   const businessIds = businesses.map(b => b.id);
   const messages = await getMessages(businessIds);
+
+  let trialDaysRemaining = null;
+
+if (
+  currentUser &&
+  currentUser.trial_ends_at &&
+  !currentUser.is_admin
+) {
+  const now = new Date();
+  const trialEnd = new Date(currentUser.trial_ends_at);
+
+  trialDaysRemaining = Math.max(
+    0,
+    Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24))
+  );
+}
   
   const businessCards = businesses
     .map(
