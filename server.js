@@ -674,6 +674,24 @@ button {
   </div>
 </div>
 
+${
+  true
+    ? `
+      <div style="
+        background:#eff6ff;
+        border:1px solid #bfdbfe;
+        color:#1d4ed8;
+        padding:16px;
+        border-radius:14px;
+        margin-bottom:20px;
+        font-weight:600;
+      ">
+        Your free trial ends in ${trialDaysRemaining} days.
+      </div>
+    `
+    : ''
+}
+
 <div class="stats-row">
   <div class="stat-card">
     <h3>${businesses.length}</h3>
