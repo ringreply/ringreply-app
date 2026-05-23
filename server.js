@@ -7,10 +7,12 @@ const session = require('express-session');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { Resend } = require('resend');
+const Stripe = require('stripe');
 
 const app = express();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 function validateTwilioRequest(req, res, next) {
   const signature = req.headers['x-twilio-signature'];
@@ -2080,6 +2082,34 @@ const password = req.body.password;
   req.session.userId = data.id;
 
   res.send('Logged in');
+});
+
+app.post('/create-checkout-session', async (req, res) => {
+  try {
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'subscription',
+
+      line_items: [
+        {
+          price: 'price_1TaGHkK69fYrfgldKZ70Gtmj',
+          quantity: 1,
+        },
+      ],
+
+      success_url: `${process.env.PUBLIC_URL}/billing-success`,
+      cancel_url: `${process.env.PUBLIC_URL}/billing-cancel`,
+    });
+
+    res.json({
+      url: session.url
+    });
+
+  } catch (err) {
+    console.error('Stripe error:', err);
+    res.status(500).send('Stripe checkout failed');
+  }
 });
 
 app.post('/forgot-password', async (req, res) => {
