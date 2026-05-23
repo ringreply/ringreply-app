@@ -2016,7 +2016,7 @@ const password = req.body.password;
 
   try {
   const emailResult = await resend.emails.send({
-    from: 'RingReply <hello@ringreply.co.uk>',
+    from: 'RingReply <hello@updates.ringreply.co.uk>',
     to: email,
     subject: 'Welcome to RingReply',
     html: `
