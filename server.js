@@ -675,7 +675,7 @@ button {
 </div>
 
 ${
-  true
+  trailDaysRemaning !==null
     ? `
       <div style="
         background:#eff6ff;
