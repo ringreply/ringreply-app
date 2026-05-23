@@ -2014,6 +2014,44 @@ const password = req.body.password;
     return res.status(500).send('Signup failed');
   }
 
+  await resend.emails.send({
+  from: 'RingReply <hello@ringreply.co.uk>',
+  to: email,
+  subject: 'Welcome to RingReply',
+  html: `
+    <div style="font-family:Arial,sans-serif;line-height:1.6;">
+      <h2>Welcome to RingReply</h2>
+
+      <p>
+        Your 14-day free trial has started.
+      </p>
+
+      <p>
+        RingReply helps you automatically reply to missed calls with text messages so you never lose potential customers.
+      </p>
+
+      <p>
+        Next steps:
+      </p>
+
+      <ol>
+        <li>Log in to your dashboard</li>
+        <li>Add your business</li>
+        <li>Set up your RingReply number</li>
+        <li>Forward missed calls</li>
+      </ol>
+
+      <p>
+        Need help? Reply to this email anytime.
+      </p>
+
+      <p>
+        — RingReply
+      </p>
+    </div>
+  `
+});
+
   res.send('User created');
 });
 
