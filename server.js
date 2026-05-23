@@ -2034,6 +2034,25 @@ const password = req.body.password;
   console.error('Welcome email failed:', err);
 }
 
+try {
+  await resend.emails.send({
+    from: 'RingReply <hello@updates.ringreply.co.uk>',
+    to: 'hello@ringreply.co.uk',
+    subject: 'New RingReply signup',
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;">
+        <h2>New signup</h2>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Trial:</strong> 14 days started</p>
+      </div>
+    `
+  });
+
+  console.log('Signup alert sent');
+} catch (err) {
+  console.error('Signup alert failed:', err);
+}
+
   res.send('User created');
 });
 
