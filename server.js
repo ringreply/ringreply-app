@@ -219,18 +219,35 @@ if (
           <h1>Your trial has ended</h1>
           <p>Please upgrade to continue using RingReply.</p>
 
-          <button style="
-            margin-top:20px;
-            padding:14px 22px;
-            border:none;
-            border-radius:10px;
-            background:#2563eb;
-            color:white;
-            font-weight:600;
-            cursor:pointer;
-          ">
-            Upgrade
-          </button>
+          <button
+  onclick="startCheckout()"
+  style="
+    margin-top:20px;
+    padding:14px 22px;
+    border:none;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+  "
+>
+  Upgrade
+</button>
+
+<script>
+async function startCheckout() {
+
+  const res = await fetch('/create-checkout-session', {
+    method: 'POST'
+  });
+
+  const data = await res.json();
+
+  window.location.href = data.url;
+}
+</script>
+
         </div>
       </body>
     </html>
