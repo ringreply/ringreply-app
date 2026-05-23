@@ -686,7 +686,7 @@ ${
         margin-bottom:20px;
         font-weight:600;
       ">
-        Your free trial ends in ${trialDaysRemaining} days.
+        Your free trial ends in ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'}.
       </div>
     `
     : ''
