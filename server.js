@@ -2023,7 +2023,7 @@ const password = req.body.password;
       <div style="font-family:Arial,sans-serif;line-height:1.6;">
         <h2>Welcome to RingReply</h2>
         <p>Your 14-day free trial has started.</p>
-        <p>Need help? Reply to this email anytime.</p>
+        <p>Need help? Email hello@ringreply.co.uk anytime.</p>
         <p>— RingReply</p>
       </div>
     `
