@@ -2129,6 +2129,46 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
+app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
+
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+
+  } catch (err) {
+    console.error('Webhook signature failed.', err.message);
+    return res.sendStatus(400);
+  }
+
+  if (event.type === 'checkout.session.completed') {
+
+    const session = event.data.object;
+
+    const customerEmail = session.customer_details.email;
+
+    console.log('Payment successful for:', customerEmail);
+
+    await supabase
+      .from('users')
+      .update({
+        subscription_status: 'active',
+        trial_ends_at: null
+      })
+      .eq('email', customerEmail);
+
+  }
+
+  res.sendStatus(200);
+});
+
 app.post('/forgot-password', async (req, res) => {
   const email = req.body.email.trim().toLowerCase();
 
