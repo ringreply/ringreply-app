@@ -2129,6 +2129,22 @@ app.post('/create-checkout-session', async (req, res) => {
   }
 });
 
+app.get('/billing-success', (req, res) => {
+  res.send(`
+    <h1>Payment successful</h1>
+    <p>Your RingReply subscription is now active.</p>
+    <a href="/">Return to dashboard</a>
+  `);
+});
+
+app.get('/billing-cancel', (req, res) => {
+  res.send(`
+    <h1>Payment cancelled</h1>
+    <p>No payment was taken.</p>
+    <a href="/">Return to dashboard</a>
+  `);
+});
+
 app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (req, res) => {
 
   const sig = req.headers['stripe-signature'];
