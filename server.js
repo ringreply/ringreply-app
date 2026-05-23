@@ -186,6 +186,54 @@ if (
     Math.ceil((trialEnd - now) / (1000 * 60 * 60 * 24))
   );
 }
+
+if (
+  currentUser &&
+  !currentUser.is_admin &&
+  trialDaysRemaining !== null &&
+  trialDaysRemaining <= 0
+) {
+  return res.send(`
+    <html>
+      <head>
+        <title>Trial Expired</title>
+      </head>
+      <body style="
+        font-family:sans-serif;
+        background:#f8fafc;
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:100vh;
+      ">
+        <div style="
+          background:white;
+          padding:40px;
+          border-radius:16px;
+          box-shadow:0 10px 30px rgba(0,0,0,0.1);
+          max-width:500px;
+          text-align:center;
+        ">
+          <h1>Your trial has ended</h1>
+          <p>Please upgrade to continue using RingReply.</p>
+
+          <button style="
+            margin-top:20px;
+            padding:14px 22px;
+            border:none;
+            border-radius:10px;
+            background:#2563eb;
+            color:white;
+            font-weight:600;
+            cursor:pointer;
+          ">
+            Upgrade
+          </button>
+        </div>
+      </body>
+    </html>
+  `);
+}
   
   const businessCards = businesses
     .map(
