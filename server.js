@@ -80,9 +80,11 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
     await supabase
       .from('users')
       .update({
-        subscription_status: 'active',
-        trial_ends_at: null
-      })
+  subscription_status: 'active',
+  trial_ends_at: null,
+  stripe_customer_id: session.customer
+})
+
       .eq('email', customerEmail);
 
   }
