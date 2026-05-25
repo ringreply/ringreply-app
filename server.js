@@ -825,6 +825,25 @@ button:hover {
   transform: translateY(-1px);
 }
 
+.plan-badge {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.plan-badge.pro {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.plan-badge.trial {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
       </style>
     </head>
 
@@ -939,9 +958,11 @@ ${
 
   <div class="stat-card">
     <h3>
-      ${currentUser.subscription_status === 'active'
-        ? 'PRO'
-        : 'TRIAL'}
+      ${
+  currentUser.subscription_status === 'active'
+    ? '<span class="plan-badge pro">PRO</span>'
+    : '<span class="plan-badge trial">TRIAL</span>'
+}
     </h3>
 
     <p>Plan</p>
