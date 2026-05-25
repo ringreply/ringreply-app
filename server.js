@@ -965,7 +965,7 @@ ${
 }
     </h3>
 
-    <p>Plan</p>
+    <p style="margin-top:12px;">Current Plan</p>
   </div>
 
 </div>
