@@ -496,17 +496,28 @@ const messageCards = Object.values(conversations)
 }
 
 .stat-card {
-  flex: 1;
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+  transition: 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
 .stat-card h3 {
-  font-size: 32px;
+  font-size: 42px;
   margin: 0;
+  color: #111827;
 }
 
 .stat-card p {
-  margin-top: 8px;
-  color: #64748b;
+  margin-top: 10px;
+  color: #6b7280;
+  font-size: 15px;
 }
 
 .card {
