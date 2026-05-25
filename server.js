@@ -790,15 +790,74 @@ ${
   trialDaysRemaining !== null
     ? `
       <div style="
-        background:#eff6ff;
-        border:1px solid #bfdbfe;
-        color:#1d4ed8;
-        padding:16px;
-        border-radius:14px;
-        margin-bottom:20px;
-        font-weight:600;
+        background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        color: white;
+        padding: 24px;
+        border-radius: 18px;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(37,99,235,0.2);
       ">
-        Your free trial ends in ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'}.
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          flex-wrap:wrap;
+          gap:16px;
+        ">
+
+          <div>
+            <div style="
+              font-size:14px;
+              opacity:0.85;
+              margin-bottom:6px;
+            ">
+              Subscription Status
+            </div>
+
+            <div style="
+              font-size:28px;
+              font-weight:700;
+              margin-bottom:8px;
+            ">
+              ${currentUser.subscription_status === 'active'
+                ? 'Active Subscription'
+                : 'Free Trial Active'}
+            </div>
+
+            <div style="
+              font-size:16px;
+              opacity:0.95;
+            ">
+              ${currentUser.subscription_status === 'active'
+                ? 'Your RingReply subscription is active.'
+                : `Your free trial ends in ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'}.`}
+            </div>
+          </div>
+
+          <div style="
+            background:rgba(255,255,255,0.12);
+            padding:16px 20px;
+            border-radius:14px;
+            min-width:180px;
+          ">
+            <div style="
+              font-size:13px;
+              opacity:0.8;
+              margin-bottom:6px;
+            ">
+              Plan
+            </div>
+
+            <div style="
+              font-size:22px;
+              font-weight:700;
+            ">
+              £14.99/mo
+            </div>
+          </div>
+
+        </div>
       </div>
     `
     : ''
