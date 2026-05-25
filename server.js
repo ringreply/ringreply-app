@@ -864,20 +864,32 @@ ${
 }
 
 <div class="stats-row">
+
   <div class="stat-card">
     <h3>${businesses.length}</h3>
     <p>Businesses</p>
   </div>
 
   <div class="stat-card">
-    <h3>${messages.length}</h3>
-    <p>Messages</p>
+    <h3>${messages.filter(m => m.direction === 'inbound').length}</h3>
+    <p>Incoming Messages</p>
   </div>
 
   <div class="stat-card">
-    <h3 id="unreadStat">${messages.filter(m => m.direction === 'inbound' && m.read === false).length}</h3>
-<p>Unread</p>
+    <h3>${messages.filter(m => m.read === false).length}</h3>
+    <p>Unread</p>
   </div>
+
+  <div class="stat-card">
+    <h3>
+      ${currentUser.subscription_status === 'active'
+        ? 'PRO'
+        : 'TRIAL'}
+    </h3>
+
+    <p>Plan</p>
+  </div>
+
 </div>
 
         <div class="card">
