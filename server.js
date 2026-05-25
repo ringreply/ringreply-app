@@ -237,6 +237,7 @@ if (
 if (
   currentUser &&
   !currentUser.is_admin &&
+  currentUser.subscription_status !== 'active' &&
   trialDaysRemaining !== null &&
   trialDaysRemaining <= 0
 ) {
