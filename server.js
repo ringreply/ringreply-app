@@ -712,11 +712,18 @@ button {
     grid-template-columns: 1fr;
   }
 
-  .card,
-  .business-card,
-  .message-card {
-    padding: 22px;
-  }
+  .card {
+  background: white;
+  border-radius: 22px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+  margin-bottom: 24px;
+}
+
+.business-card,
+.message-card {
+  padding: 22px;
+}
 
   .logo {
     width: 180px;
@@ -766,6 +773,45 @@ button {
 
 .logout-btn:hover {
   opacity: 0.9;
+}
+
+.card h2 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.subtext {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid #dbe4ee;
+  margin-top: 8px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
       </style>
