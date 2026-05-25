@@ -912,6 +912,9 @@ ${
                 ? 'Your RingReply subscription is active.'
                 : `Your free trial ends in ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'}.`}
             </div>
+            <button onclick="openBillingPortal()" style="margin-top:18px;">
+  Manage Subscription
+</button>
           </div>
 
           <div style="
@@ -1253,6 +1256,27 @@ setInterval(refreshDashboardStatus, 15000);
     Contact support
   </a>
 </footer>
+
+<script>
+async function openBillingPortal() {
+  try {
+    const res = await fetch('/create-customer-portal-session', {
+      method: 'POST'
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Could not open billing portal.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Billing portal failed.');
+  }
+}
+</script>
   
     </body>
   </html>
