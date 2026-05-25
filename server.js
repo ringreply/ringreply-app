@@ -1547,7 +1547,10 @@ app.post('/add-business', async (req, res) => {
     return res.status(400).send('That Twilio number is already in use.');
   }
 
-  const { error } = await supabase.from('businesses').insert([
+  const { data: newBusiness, error } = await supabase
+  .from('businesses')
+  .insert([
+
     {
       name,
       twilio_number: cleanedNumber,
@@ -1555,12 +1558,23 @@ app.post('/add-business', async (req, res) => {
       owner_mobile: cleanedOwnerMobile,
       user_id: req.session.userId
     }
-  ]);
+  ])
+.select()
+.single();
 
   if (error) {
     console.error('add-business error FULL:', error);
     return res.status(500).send('Failed to add business: ' + error.message);
   }
+
+  await supabase
+  .from('phone_numbers')
+  .update({
+    assigned: true,
+    assigned_user_id: req.session.userId,
+    assigned_business_id: newBusiness.id
+  })
+  .eq('phone_number', cleanedNumber);
 
   res.send('Business added successfully');
 });
