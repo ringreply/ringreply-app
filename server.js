@@ -2341,6 +2341,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'subscription',
+      customer_email: req.session.email,
 
       line_items: [
         {
@@ -2360,6 +2361,15 @@ app.post('/create-checkout-session', async (req, res) => {
   } catch (err) {
     console.error('Stripe error:', err);
     res.status(500).send('Stripe checkout failed');
+  }
+});
+
+app.post('/create-customer-portal-session', async (req, res) => {
+  try {
+    res.status(501).send('Customer portal needs Stripe customer ID saved first.');
+  } catch (err) {
+    console.error('Customer portal error:', err);
+    res.status(500).send('Customer portal failed');
   }
 });
 
