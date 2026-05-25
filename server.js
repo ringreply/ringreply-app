@@ -213,6 +213,11 @@ app.get('/', async (req, res) => {
   const businessIds = businesses.map(b => b.id);
   const messages = await getMessages(businessIds);
 
+  const { data: availableNumbers } = await supabase
+  .from('phone_numbers')
+  .select('*')
+  .eq('assigned', false);
+
   let trialDaysRemaining = null;
 
 if (
@@ -826,7 +831,15 @@ ${
           <input id="businessName" placeholder="Business name" onblur="updateAutoMessage()">
 
           <label>Twilio Number</label>
-<input id="twilioNumber" placeholder="+447...">
+<select id="twilioNumber">
+  <option value="">Select a number</option>
+
+  ${availableNumbers.map(number => `
+    <option value="${number.phone_number}">
+      ${number.phone_number}
+    </option>
+  `).join('')}
+</select>
 
 <button
   type="button"
