@@ -1616,6 +1616,12 @@ app.post('/update-business/:id', async (req, res) => {
 app.post('/delete-business/:id', async (req, res) => {
   const { id } = req.params;
 
+  const { data: business } = await supabase
+    .from('businesses')
+    .select('twilio_number')
+    .eq('id', id)
+    .single();
+
   const { error } = await supabase
     .from('businesses')
     .delete()
@@ -1624,6 +1630,17 @@ app.post('/delete-business/:id', async (req, res) => {
   if (error) {
     console.error('delete-business error:', error.message);
     return res.status(500).send('Failed to delete business.');
+  }
+
+  if (business?.twilio_number) {
+    await supabase
+      .from('phone_numbers')
+      .update({
+        assigned: false,
+        assigned_user_id: null,
+        assigned_business_id: null
+      })
+      .eq('phone_number', business.twilio_number);
   }
 
   res.send('Business deleted successfully');
