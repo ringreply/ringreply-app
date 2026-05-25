@@ -2368,7 +2368,25 @@ app.post('/create-checkout-session', async (req, res) => {
 
 app.post('/create-customer-portal-session', async (req, res) => {
   try {
-    res.status(501).send('Customer portal needs Stripe customer ID saved first.');
+    const { data: user } = await supabase
+  .from('users')
+  .select('stripe_customer_id')
+  .eq('id', req.session.userId)
+  .single();
+
+if (!user?.stripe_customer_id) {
+  return res.status(400).send('No Stripe customer found.');
+}
+
+const portalSession = await stripe.billingPortal.sessions.create({
+  customer: user.stripe_customer_id,
+  return_url: `${process.env.PUBLIC_URL}/`
+});
+
+res.json({
+  url: portalSession.url
+});
+
   } catch (err) {
     console.error('Customer portal error:', err);
     res.status(500).send('Customer portal failed');
