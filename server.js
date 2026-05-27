@@ -912,10 +912,12 @@ ${
                 ? 'Your RingReply subscription is active.'
                 : `Your free trial ends in ${trialDaysRemaining} day${trialDaysRemaining === 1 ? '' : 's'}.`}
             </div>
-            <button onclick="openBillingPortal()" style="margin-top:18px;">
+            
+          </div>
+
+          <button onclick="openBillingPortal()" style="margin-top:18px;">
   Manage Subscription
 </button>
-          </div>
 
           <div style="
             background:rgba(255,255,255,0.12);
