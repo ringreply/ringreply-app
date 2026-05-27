@@ -2655,6 +2655,159 @@ app.get('/call-forwarding-help', (req, res) => {
   `);
 });
 
+app.get('/landing', (req, res) => {
+  res.send(`
+    <html>
+      <head>
+        <title>RingReply</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <style>
+          body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dbeafe, #f8fafc);
+            color: #0f172a;
+          }
+
+          .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            text-align: center;
+          }
+
+          h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+          }
+
+          p {
+            font-size: 20px;
+            color: #475569;
+            line-height: 1.6;
+          }
+
+          .buttons {
+            margin-top: 34px;
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+          }
+
+          a {
+            text-decoration: none;
+          }
+
+          .btn {
+            padding: 16px 24px;
+            border-radius: 14px;
+            font-weight: 700;
+            display: inline-block;
+          }
+
+          .primary {
+            background: #2563eb;
+            color: white;
+          }
+
+          .secondary {
+            background: white;
+            color: #0f172a;
+            border: 1px solid #dbe2ea;
+          }
+
+          .section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px 80px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+          }
+
+          .card {
+            background: white;
+            padding: 26px;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+          }
+
+          .price {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+          }
+
+          @media (max-width: 700px) {
+            h1 {
+              font-size: 36px;
+            }
+
+            p {
+              font-size: 18px;
+            }
+          }
+        </style>
+      </head>
+
+      <body>
+
+        <section class="hero">
+          <h1>Never lose a customer from a missed call again</h1>
+
+          <p>
+            RingReply automatically sends a text message when you miss a call,
+            helping your business respond instantly — even when you're busy.
+          </p>
+
+          <div class="buttons">
+            <a class="btn primary" href="/signup-page">
+              Start 14-day free trial
+            </a>
+
+            <a class="btn secondary" href="/login-page">
+              Login
+            </a>
+          </div>
+        </section>
+
+        <section class="section">
+
+          <div class="card">
+            <h3>1. Choose your number</h3>
+            <p>Pick an available RingReply number for your business.</p>
+          </div>
+
+          <div class="card">
+            <h3>2. Forward missed calls</h3>
+            <p>Forward unanswered calls to RingReply.</p>
+          </div>
+
+          <div class="card">
+            <h3>3. Reply instantly</h3>
+            <p>
+              Customers automatically receive a text and can reply straight away.
+            </p>
+          </div>
+
+        </section>
+
+        <section class="price">
+          <h2>Simple pricing</h2>
+
+          <p>
+            14-day free trial, then £14.99/month. Cancel anytime.
+          </p>
+        </section>
+
+      </body>
+    </html>
+  `);
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
