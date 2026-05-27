@@ -201,7 +201,8 @@ async function hasDuplicateNumber(twilioNumber, excludeId = null) {
 
 app.get('/', async (req, res) => {
   if (!req.session.userId) {
-  return res.redirect('/login-page');
+  return res.redirect('/landing');
+}
 }
 
   const businesses = await getBusinesses(req.session.userId);
