@@ -2760,8 +2760,9 @@ app.get('/landing', (req, res) => {
   src="/logo.png"
   alt="RingReply"
   style="
-    width: 90px;
-    margin-bottom: 24px;
+    width: 180px;
+    display:block;
+    margin:0 auto 24px;
   "
 >
 
