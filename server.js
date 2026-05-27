@@ -85,7 +85,7 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
   stripe_customer_id: session.customer
 })
 
-      .eq('email', customerEmail);
+      .eq('id', session.client_reference_id);
 
   }
 
