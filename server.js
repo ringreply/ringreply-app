@@ -203,7 +203,6 @@ app.get('/', async (req, res) => {
   if (!req.session.userId) {
   return res.redirect('/landing');
 }
-}
 
   const businesses = await getBusinesses(req.session.userId);
 
