@@ -2368,6 +2368,7 @@ app.post('/create-checkout-session', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'subscription',
       customer_email: req.session.email,
+      client_reference_id: req.session.userId,
 
       line_items: [
         {
