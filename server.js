@@ -2813,6 +2813,35 @@ app.get('/landing', (req, res) => {
           </p>
         </section>
 
+        <section style="
+  text-align:center;
+  padding:80px 20px;
+  background:#0f172a;
+  color:white;
+">
+
+  <h2 style="
+    font-size:42px;
+    margin-bottom:18px;
+  ">
+    Ready to stop losing customers?
+  </h2>
+
+  <p style="
+    max-width:700px;
+    margin:0 auto 30px;
+    color:#cbd5e1;
+    font-size:20px;
+  ">
+    Start your free 14-day trial and set up RingReply in minutes.
+  </p>
+
+  <a class="btn primary" href="/signup-page">
+    Start Free Trial
+  </a>
+
+</section>
+
       </body>
     </html>
   `);
