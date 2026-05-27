@@ -2755,6 +2755,16 @@ app.get('/landing', (req, res) => {
       <body>
 
         <section class="hero">
+
+<img
+  src="/logo.png"
+  alt="RingReply"
+  style="
+    width: 90px;
+    margin-bottom: 24px;
+  "
+>
+
           <h1>Never lose a customer from a missed call again</h1>
 
           <p>
