@@ -726,6 +726,32 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .button-row {
+  flex-direction: column;
+}
+
+button,
+.primary,
+.secondary,
+.secondary-btn,
+.logout-btn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.business-grid {
+  grid-template-columns: 1fr;
+}
+
+.message-top,
+.card-header {
+  flex-direction: column;
+}
+
+.stat-card h3 {
+  font-size: 34px;
+}
+
   .card {
   background: white;
   border-radius: 22px;
