@@ -753,11 +753,12 @@ button,
 }
 
   .card {
-  background: white;
-  border-radius: 22px;
-  padding: 28px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-  margin-bottom: 24px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+  padding: 24px;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 30px rgba(15,23,42,0.08);
 }
 
 .business-card,
