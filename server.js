@@ -2741,14 +2741,41 @@ app.get('/landing', (req, res) => {
           }
 
           @media (max-width: 700px) {
-            h1 {
-              font-size: 36px;
-            }
+  .hero {
+    padding: 40px 18px;
+  }
 
-            p {
-              font-size: 18px;
-            }
-          }
+  h1 {
+    font-size: 34px;
+    line-height: 1.15;
+  }
+
+  p {
+    font-size: 17px;
+  }
+
+  .buttons {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  .section {
+    padding: 10px 18px 50px;
+  }
+
+  .card {
+    padding: 22px;
+  }
+
+  .price {
+    padding: 45px 18px;
+  }
+}
         </style>
       </head>
 
