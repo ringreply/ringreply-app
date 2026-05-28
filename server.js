@@ -500,10 +500,14 @@ const messageCards = Object.values(conversations)
 
 .stat-card {
   background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-  transition: 0.2s;
+  border-radius: 22px;
+  padding: 22px 18px;
+  box-shadow: 0 8px 24px rgba(15,23,42,0.06);
+  text-align: center;
+  min-height: 105px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .stat-card:hover {
@@ -512,15 +516,15 @@ const messageCards = Object.values(conversations)
 }
 
 .stat-card h3 {
-  font-size: 42px;
+  font-size: 38px;
   margin: 0;
-  color: #111827;
+  color: #0f172a;
 }
 
 .stat-card p {
-  margin-top: 10px;
-  color: #6b7280;
-  font-size: 15px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: #64748b;
 }
 
 .card {
