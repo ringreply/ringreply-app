@@ -425,6 +425,7 @@ const messageCards = Object.values(conversations)
   <html>
     <head>
       <title>RingReply</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
         body {
   margin: 0;
