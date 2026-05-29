@@ -1838,6 +1838,7 @@ app.post('/update-business/:id', async (req, res) => {
   if (duplicate) {
     return res.status(400).send('That Twilio number is already in use.');
   }
+  
 
   const { error } = await supabase
     .from('businesses')
@@ -1848,7 +1849,7 @@ app.post('/update-business/:id', async (req, res) => {
       owner_mobile: cleanedOwnerMobile
     })
     .eq('id', id)
-    .eq('user_id', req.session.userdId);
+    .eq('user_id', req.session.userId);
 
   if (error) {
     console.error('update-business error:', error.message);
