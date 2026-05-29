@@ -1171,11 +1171,11 @@ const url = id ? '/update-business/' + id : '/add-business';
 if (![...twilioSelect.options].some(option => option.value === b.twilioNumber)) {
   const option = document.createElement('option');
   option.value = b.twilioNumber;
-  option.text = b.twilioNumber + ' (current)';
+  option.textContent = b.twilioNumber + ' (current)';
   twilioSelect.appendChild(option);
 }
 
-twilioSelect.value = b.twilioNumber;S
+twilioSelect.value = b.twilioNumber;
           document.getElementById('ownerMobile').value = b.ownerMobile || '';
           document.getElementById('autoReplyMessage').value = b.autoReplyMessage;
           document.getElementById('status').innerText = '';
