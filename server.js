@@ -2610,24 +2610,6 @@ app.post('/reset-password', async (req, res) => {
   res.send('Password updated. Please log in.');
 });
 
-app.get('/businesses', async (req, res) => {
-  try {
-    const { data, error } = await supabase
-      .from('businesses')
-      .select('*');
-
-    if (error) {
-      console.error('getBusinesses error:', error);
-      return res.status(500).json({ error: error.message });
-    }
-
-    res.json(data);
-  } catch (err) {
-    console.error('Route error:', err);
-    res.status(500).json({ error: 'Server error' });
-  }
-});
-
 app.get('/dashboard-status', async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).json({ error: 'Unauthorized' });
