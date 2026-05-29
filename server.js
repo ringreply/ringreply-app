@@ -1854,6 +1854,7 @@ if (!req.session.userId) {
     .from('businesses')
     .select('twilio_number')
     .eq('id', id)
+    .eq('user_id', req.session.userId)
     .single();
 
   const { error } = await supabase
