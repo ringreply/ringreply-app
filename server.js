@@ -1117,6 +1117,13 @@ ${
           const name = document.getElementById('businessName').value.trim();
 
           let twilioNumber = document.getElementById('twilioNumber').value.trim();
+
+if (!twilioNumber && id) {
+  const existingBusiness = businesses.find(x => String(x.id) === String(id));
+  if (existingBusiness) {
+    twilioNumber = existingBusiness.twilioNumber;
+  }
+}
           if (twilioNumber.startsWith('0')) {
             twilioNumber = '+44' + twilioNumber.slice(1);
           }
