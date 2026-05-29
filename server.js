@@ -1113,7 +1113,7 @@ ${
           status.className = '';
           status.innerText = '';
 
-          const id = document.getElementById('businessId').value;
+          const id = document.getElementById('businessId').value || '';
           const name = document.getElementById('businessName').value.trim();
 
           let twilioNumber = document.getElementById('twilioNumber').value.trim();
@@ -1164,7 +1164,7 @@ const url = id ? '/update-business/' + id : '/add-business';
           const b = businesses.find(x => String(x.id) === String(id));
           if (!b) return;
 
-          document.getElementById('businessId').value = b.id;
+          document.getElementById('businessId').value = b.id || b._id || id;
           document.getElementById('businessName').value = b.name;
           const twilioSelect = document.getElementById('twilioNumber');
 
