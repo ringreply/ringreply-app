@@ -2405,6 +2405,7 @@ const password = req.body.password;
   }
 
   req.session.userId = data.id;
+  req.session.email = data.email;
 
   res.send('Logged in');
 });
