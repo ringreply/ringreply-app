@@ -1166,7 +1166,16 @@ const url = id ? '/update-business/' + id : '/add-business';
 
           document.getElementById('businessId').value = b.id;
           document.getElementById('businessName').value = b.name;
-          document.getElementById('twilioNumber').value = b.twilioNumber;
+          const twilioSelect = document.getElementById('twilioNumber');
+
+if (![...twilioSelect.options].some(option => option.value === b.twilioNumber)) {
+  const option = document.createElement('option');
+  option.value = b.twilioNumber;
+  option.text = b.twilioNumber + ' (current)';
+  twilioSelect.appendChild(option);
+}
+
+twilioSelect.value = b.twilioNumber;S
           document.getElementById('ownerMobile').value = b.ownerMobile || '';
           document.getElementById('autoReplyMessage').value = b.autoReplyMessage;
           document.getElementById('status').innerText = '';
@@ -1839,11 +1848,11 @@ app.post('/update-business/:id', async (req, res) => {
       owner_mobile: cleanedOwnerMobile
     })
     .eq('id', id)
-    .eq('used_id', req.session.userdId);
+    .eq('user_id', req.session.userdId);
 
   if (error) {
     console.error('update-business error:', error.message);
-    return res.status(500).send('Failed to update business.');
+    return res.status(500).send('Failed to update business: ' + error.message);
   }
 
   res.send('Business updated successfully');
