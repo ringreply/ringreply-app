@@ -1805,6 +1805,10 @@ app.post('/add-business', async (req, res) => {
 
 app.post('/update-business/:id', async (req, res) => {
   const { id } = req.params;
+  if (!req.session.userId) {
+  return res.status(401).send('Please log in first.');
+}
+
   const { name, twilioNumber, autoReplyMessage, ownerMobile } = req.body;
 
   if (!name || !twilioNumber || !autoReplyMessage || !ownerMobile) {
@@ -1827,7 +1831,8 @@ app.post('/update-business/:id', async (req, res) => {
       auto_reply_message: autoReplyMessage,
       owner_mobile: cleanedOwnerMobile
     })
-    .eq('id', id);
+    .eq('id', id)
+    .eq('used_id', req.session.userdId);
 
   if (error) {
     console.error('update-business error:', error.message);
