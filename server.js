@@ -719,8 +719,10 @@ button {
   }
 
   .stats-row {
-    flex-direction: column;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
 
   .info-grid {
     grid-template-columns: 1fr;
@@ -748,8 +750,24 @@ button,
   flex-direction: column;
 }
 
+stat-card {
+  padding: 22px 16px;
+  min-height: 110px;
+  text-align: center;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+}
+
 .stat-card h3 {
-  font-size: 34px;
+  font-size: 36px;
+  margin: 0;
+}
+
+.stat-card p {
+  font-size: 14px;
+  margin-top: 10px;
 }
 
   .card {
