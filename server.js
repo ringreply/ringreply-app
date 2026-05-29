@@ -1843,6 +1843,11 @@ app.post('/update-business/:id', async (req, res) => {
 });
 
 app.post('/delete-business/:id', async (req, res) => {
+
+if (!req.session.userId) {
+  return res.status(401).send('Please log in first.');
+}
+
   const { id } = req.params;
 
   const { data: business } = await supabase
@@ -1854,7 +1859,8 @@ app.post('/delete-business/:id', async (req, res) => {
   const { error } = await supabase
     .from('businesses')
     .delete()
-    .eq('id', id);
+    .eq('id', id)
+    .eq('user_id', req.session.userId);
 
   if (error) {
     console.error('delete-business error:', error.message);
