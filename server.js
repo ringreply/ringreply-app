@@ -750,7 +750,7 @@ button,
   flex-direction: column;
 }
 
-stat-card {
+.stat-card {
   padding: 22px 16px;
   min-height: 110px;
   text-align: center;
