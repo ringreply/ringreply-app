@@ -2946,10 +2946,12 @@ app.get('/landing', (req, res) => {
             </a>
           </div>
 
-          <div style="margin-top:20px;">
-  <a href="/terms">Terms</a>
-  &nbsp;|&nbsp;
-  <a href="/privacy">Privacy</a>
+          <div style="margin-top:20px;font-size:14px;">
+    <a href="/terms">Terms</a>
+    &nbsp;|&nbsp;
+    <a href="/privacy">Privacy</a>
+    &nbsp;|&nbsp;
+    <a href="mailto:hello@ringreply.co.uk">Contact</a>
 </div>
 
         </section>
