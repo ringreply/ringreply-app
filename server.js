@@ -2747,6 +2747,42 @@ app.get('/call-forwarding-help', (req, res) => {
   `);
 });
 
+app.get('/terms', (req, res) => {
+  res.send(`
+    <h1>Terms of Service</h1>
+
+    <p>RingReply provides automated SMS responses to missed calls.</p>
+
+    <p>You are responsible for ensuring that you have permission to contact customers and comply with applicable laws and regulations.</p>
+
+    <p>RingReply is provided on an "as is" basis without warranties of any kind.</p>
+
+    <p>We reserve the right to suspend accounts that abuse the service.</p>
+
+    <p>Subscriptions renew automatically until cancelled.</p>
+
+    <p>Last updated: ${new Date().toLocaleDateString()}</p>
+  `);
+});
+
+app.get('/privacy', (req, res) => {
+  res.send(`
+    <h1>Privacy Policy</h1>
+
+    <p>RingReply collects account information including email addresses and business information required to provide the service.</p>
+
+    <p>Missed call and SMS data is processed solely for the purpose of delivering automated responses and displaying conversations within the dashboard.</p>
+
+    <p>Payment information is processed securely by Stripe. RingReply does not store card details.</p>
+
+    <p>We do not sell personal information to third parties.</p>
+
+    <p>If you wish to request deletion of your data, contact nick@ringreply.co.uk.</p>
+
+    <p>Last updated: ${new Date().toLocaleDateString()}</p>
+  `);
+});
+
 app.get('/landing', (req, res) => {
   res.send(`
     <html>
@@ -2901,6 +2937,13 @@ app.get('/landing', (req, res) => {
               Login
             </a>
           </div>
+
+          <div style="margin-top:20px;">
+  <a href="/terms">Terms</a>
+  &nbsp;|&nbsp;
+  <a href="/privacy">Privacy</a>
+</div>
+
         </section>
 
         <section class="section">
