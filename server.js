@@ -104,7 +104,7 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax'
+    sameSite: 'none'
   }
 }));
 
