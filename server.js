@@ -2777,7 +2777,7 @@ app.get('/privacy', (req, res) => {
 
     <p>We do not sell personal information to third parties.</p>
 
-    <p>If you wish to request deletion of your data, contact nick@ringreply.co.uk.</p>
+    <p>If you wish to request deletion of your data, contact hello@ringreply.co.uk.</p>
 
     <p>Last updated: ${new Date().toLocaleDateString()}</p>
   `);
