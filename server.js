@@ -293,14 +293,22 @@ if (
 
 <script>
 async function startCheckout() {
+  try {
+    const res = await fetch('/create-checkout-session', {
+      method: 'POST'
+    });
 
-  const res = await fetch('/create-checkout-session', {
-    method: 'POST'
-  });
+    const data = await res.json();
 
-  const data = await res.json();
-
-  window.location.href = data.url;
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Could not start checkout.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Checkout failed.');
+  }
 }
 </script>
 
