@@ -8,8 +8,16 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { Resend } = require('resend');
 const Stripe = require('stripe');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100
+});
+
+app.use(limiter);
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
