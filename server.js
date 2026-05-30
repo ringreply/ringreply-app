@@ -2455,7 +2455,7 @@ app.post('/create-checkout-session', async (req, res) => {
         },
       ],
 
-      success_url: `${process.env.PUBLIC_URL}/billing-success`,
+      success_url: `${process.env.PUBLIC_URL}/billing-success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.PUBLIC_URL}/billing-cancel`,
     });
 
@@ -2496,12 +2496,46 @@ res.json({
   }
 });
 
-app.get('/billing-success', (req, res) => {
-  res.send(`
-    <h1>Payment successful</h1>
-    <p>Your RingReply subscription is now active.</p>
-    <a href="/">Return to dashboard</a>
-  `);
+app.get('/billing-success', async (req, res) => {
+  try {
+    const sessionId = req.query.session_id;
+
+    if (!sessionId) {
+      return res.redirect('/');
+    }
+
+    const checkoutSession = await stripe.checkout.sessions.retrieve(sessionId);
+
+    const userId = checkoutSession.client_reference_id;
+
+    if (userId) {
+      req.session.userId = userId;
+
+      const { data: user } = await supabase
+        .from('users')
+        .select('email')
+        .eq('id', userId)
+        .single();
+
+      if (user?.email) {
+        req.session.email = user.email;
+      }
+
+      await supabase
+        .from('users')
+        .update({
+          subscription_status: 'active',
+          trial_ends_at: null,
+          stripe_customer_id: checkoutSession.customer
+        })
+        .eq('id', userId);
+    }
+
+    res.redirect('/');
+  } catch (err) {
+    console.error('Billing success error:', err.message);
+    res.redirect('/login-page');
+  }
 });
 
 app.get('/billing-cancel', (req, res) => {
