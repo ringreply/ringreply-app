@@ -292,7 +292,7 @@ if (
 </button>
 
 <script>
-async function startCheckout() {
+window.startCheckout = async function() {
 alert('clicked');
 
   try {
