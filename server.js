@@ -293,6 +293,8 @@ if (
 
 <script>
 async function startCheckout() {
+alert('clicked');
+
   try {
     const res = await fetch('/create-checkout-session', {
       method: 'POST'
