@@ -969,8 +969,11 @@ ${
             
           </div>
 
-          <button onclick="openBillingPortal()" style="margin-top:18px;">
-  Manage Subscription
+          <button
+  onclick="${currentUser.subscription_status === 'active' ? 'openBillingPortal()' : 'startCheckout()'}"
+  style="margin-top:18px;"
+>
+  ${currentUser.subscription_status === 'active' ? 'Manage Subscription' : 'Upgrade Now'}
 </button>
 
           <div style="
