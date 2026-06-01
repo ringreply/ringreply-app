@@ -1986,10 +1986,29 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
 });
 
 app.post('/send-reply', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in first.');
+  }
+
   const { customerNumber, twilioNumber, replyText, businessId } = req.body;
 
   if (!customerNumber || !twilioNumber || !replyText || !businessId) {
     return res.status(400).send('Missing reply details.');
+  }
+
+  const { data: ownedBusiness, error: ownedBusinessError } = await supabase
+    .from('businesses')
+    .select('id, twilio_number')
+    .eq('id', businessId)
+    .eq('user_id', req.session.userId)
+    .single();
+
+  if (ownedBusinessError || !ownedBusiness) {
+    return res.status(403).send('Not allowed.');
+  }
+
+  if (ownedBusiness.twilio_number !== twilioNumber) {
+    return res.status(403).send('Invalid Twilio number.');
   }
 
   try {
@@ -2736,6 +2755,17 @@ app.get('/conversation-messages', async (req, res) => {
   if (!customer || !business) {
     return res.status(400).json({ error: 'Missing details' });
   }
+
+  const { data: ownedBusiness, error: ownedBusinessError } = await supabase
+  .from('businesses')
+  .select('id')
+  .eq('id', business)
+  .eq('user_id', req.session.userId)
+  .single();
+
+if (ownedBusinessError || !ownedBusiness) {
+  return res.status(403).json({ error: 'Not allowed' });
+}
 
   const { data, error } = await supabase
     .from('messages')
