@@ -81,7 +81,7 @@ app.post('/stripe-webhook', express.raw({ type: 'application/json' }), async (re
 
     const session = event.data.object;
 
-    const customerEmail = session.customer_details.email;
+    const customerEmail = session.customer_details?.email;
 
     console.log('Payment successful for:', customerEmail);
 
@@ -1025,7 +1025,7 @@ ${
   </div>
 
   <div class="stat-card">
-    <h3>${messages.filter(m => m.read === false).length}</h3>
+    <h3 id="unreadStat">${messages.filter(m => m.read === false).length}</h3>
     <p>Unread</p>
   </div>
 
