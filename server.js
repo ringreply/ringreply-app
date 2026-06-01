@@ -1341,6 +1341,26 @@ setInterval(refreshDashboardStatus, 15000);
 </footer>
 
 <script>
+
+async function startCheckout() {
+  try {
+    const res = await fetch('/create-checkout-session', {
+      method: 'POST'
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      alert('Could not start checkout.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Checkout failed.');
+  }
+}
+
 async function openBillingPortal() {
   try {
     const res = await fetch('/create-customer-portal-session', {
