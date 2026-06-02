@@ -3126,6 +3126,30 @@ app.get('/landing', (req, res) => {
 
         </section>
 
+        <section class="section">
+
+  <h2>Trusted by busy trades businesses</h2>
+
+  <div class="card">
+    <p>
+      "RingReply has been brilliant for our business. We regularly miss calls while we're out on jobs, but now customers get an instant text back and can reply straight away. We've already won work from leads we would have otherwise lost."
+    </p>
+
+    <strong>— Mike, Plumbing & drianage</strong>
+  </div>
+
+  <br>
+
+  <div class="card">
+    <p>
+      "Simple to set up and does exactly what it says. Customers no longer think we're ignoring them when we're busy. The automatic text replies make us look much more professional."
+    </p>
+
+    <strong>— Nick, Plumbing & Heating Services</strong>
+  </div>
+
+</section>
+
         <section class="price">
           <h2>Simple pricing</h2>
 
