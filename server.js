@@ -3134,7 +3134,9 @@ app.get('/landing', (req, res) => {
 
         <section class="section">
 
-  <h2>Trusted by busy trades businesses</h2>
+  <h2 style="text-align:center;">
+  Trusted by busy trades businesses
+</h2>
 
   <div class="card testimonial">
     <p>
@@ -3146,10 +3148,10 @@ app.get('/landing', (req, res) => {
 
   <div class="card testimonial">
     <p>
-      "Simple to set up and does exactly what it says. Customers no longer think we're ignoring them when we're busy. The automatic text replies make us look much more professional."
+      "I've booked jobs from customers we would have otherwise missed."
     </p>
 
-    <strong>— Nick, Plumbing & Heating Services</strong>
+    <strong>— Nick, Heating Engineer</strong>
   </div>
 
 </section>
