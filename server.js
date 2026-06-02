@@ -753,8 +753,6 @@ button {
 
   .button-row {
   flex-direction: column;
-  gap: 12px;
-  margin-top 12px;
 }
 
 button,
@@ -773,6 +771,20 @@ button,
 .message-top,
 .card-header {
   flex-direction: column;
+}
+
+  .actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions button {
+    width: 100%;
+    margin: 0;
+  }
+
 }
 
 .stat-card {
@@ -3050,6 +3062,20 @@ app.get('/landing', (req, res) => {
   .buttons {
     flex-direction: column;
   }
+
+  .actions {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .actions button {
+    width: 100%;
+    margin: 0;
+  }
+
+}
 
   .btn {
     width: 100%;
