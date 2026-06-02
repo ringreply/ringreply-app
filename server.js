@@ -753,6 +753,7 @@ button {
 
   .button-row {
   flex-direction: column;
+  margin-bottom: 32px;
 }
 
 button,
