@@ -2435,11 +2435,48 @@ const password = req.body.password;
     subject: 'Welcome to RingReply',
     html: `
       <div style="font-family:Arial,sans-serif;line-height:1.6;">
-        <h2>Welcome to RingReply</h2>
-        <p>Your 14-day free trial has started.</p>
-        <p>Need help? Email hello@ringreply.co.uk anytime.</p>
-        <p>— RingReply</p>
-      </div>
+
+  <h2>Welcome to RingReply</h2>
+
+  <p>Your 14-day free trial has started.</p>
+
+  <p>
+    Login here:
+    <a href="https://app.ringreply.co.uk">
+      app.ringreply.co.uk
+    </a>
+  </p>
+
+  <p>
+    Need help setting up call forwarding?
+    <a href="https://app.ringreply.co.uk/call-forwarding-help">
+      View setup guide
+    </a>
+  </p>
+
+  <hr>
+
+  <h3>📱 Add RingReply to your phone</h3>
+
+  <p><strong>iPhone:</strong></p>
+  <ol>
+    <li>Open app.ringreply.co.uk in Safari</li>
+    <li>Tap Share</li>
+    <li>Tap Add to Home Screen</li>
+  </ol>
+
+  <p><strong>Android:</strong></p>
+  <ol>
+    <li>Open app.ringreply.co.uk in Chrome</li>
+    <li>Tap Menu</li>
+    <li>Tap Add to Home Screen</li>
+  </ol>
+
+  <p>Need help? Email hello@ringreply.co.uk anytime.</p>
+
+  <p>– RingReply</p>
+
+</div>
     `
   });
 
