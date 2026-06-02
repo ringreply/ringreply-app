@@ -2781,6 +2781,57 @@ if (ownedBusinessError || !ownedBusiness) {
   res.json(data || []);
 });
 
+app.get('/send-trial-reminders', async (req, res) => {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const targetDate = tomorrow.toISOString().split('T')[0];
+
+  const { data: users, error } = await supabase
+    .from('users')
+    .select('id, email, trial_ends_at, subscription_status, trial_reminder_sent')
+    .eq('subscription_status', 'trial')
+    .eq('trial_reminder_sent', false);
+
+  if (error) {
+    return res.status(500).send(error.message);
+  }
+
+  let sent = 0;
+
+  for (const user of users || []) {
+    if (!user.trial_ends_at) continue;
+
+    const trialEndDate = new Date(user.trial_ends_at)
+      .toISOString()
+      .split('T')[0];
+
+    if (trialEndDate !== targetDate) continue;
+
+    await resend.emails.send({
+      from: 'RingReply <hello@updates.ringreply.co.uk>',
+      to: user.email,
+      subject: 'Your RingReply trial ends tomorrow',
+      html: `
+        <h2>Your RingReply trial ends tomorrow</h2>
+        <p>Your free trial ends in 24 hours.</p>
+        <p>Upgrade now to keep your missed-call auto replies active.</p>
+        <p><a href="https://app.ringreply.co.uk">Upgrade RingReply</a></p>
+        <p>Thanks,<br>RingReply</p>
+      `
+    });
+
+    await supabase
+      .from('users')
+      .update({ trial_reminder_sent: true })
+      .eq('id', user.id);
+
+    sent++;
+  }
+
+  res.send(`Sent ${sent} reminder emails`);
+});
+
 app.get('/call-forwarding-help', (req, res) => {
   res.send(`
     <html>
