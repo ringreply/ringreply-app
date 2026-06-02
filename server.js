@@ -544,6 +544,12 @@ const messageCards = Object.values(conversations)
   margin-bottom: 28px;
 }
 
+.testimonial {
+  text-align: left;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
 h2 {
   margin-top: 0;
   font-size: 32px;
@@ -3130,7 +3136,7 @@ app.get('/landing', (req, res) => {
 
   <h2>Trusted by busy trades businesses</h2>
 
-  <div class="card">
+  <div class="card testimonial">
     <p>
       "RingReply has been brilliant for our business. We regularly miss calls while we're out on jobs, but now customers get an instant text back and can reply straight away. We've already won work from leads we would have otherwise lost."
     </p>
@@ -3138,9 +3144,7 @@ app.get('/landing', (req, res) => {
     <strong>— Mike, Plumbing & drianage</strong>
   </div>
 
-  <br>
-
-  <div class="card">
+  <div class="card testimonial">
     <p>
       "Simple to set up and does exactly what it says. Customers no longer think we're ignoring them when we're busy. The automatic text replies make us look much more professional."
     </p>
