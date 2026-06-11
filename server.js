@@ -1072,7 +1072,16 @@ ${
           <label>Business Name</label>
           <input id="businessName" placeholder="Business name" onblur="updateAutoMessage()">
 
-          <label>RingReply Number</label>
+          <label>
+  RingReply Number
+  <span
+    title="This is the number RingReply uses to handle missed calls and customer text messages."
+    style="cursor:pointer;"
+  >
+    ❓
+  </span>
+</label>
+
 <select id="twilioNumber">
   <option value="">Choose your RingReply number</option>
 
@@ -1082,6 +1091,15 @@ ${
     </option>
   `).join('')}
 </select>
+
+<p style="
+  margin-top:-10px;
+  margin-bottom:18px;
+  color:#64748b;
+  font-size:14px;
+">
+  Choose the number your missed calls will be forwarded to.
+</p>
 
 <button
   type="button"
@@ -1102,7 +1120,7 @@ ${
   📞 How to forward missed calls
 </button>
 
-<label>Owner Mobile</label>
+<label>Your Mobile Number</label>
 <input id="ownerMobile" placeholder="+447..." onblur="updateAutoMessage()">
 
 <label>Auto Reply Message</label>
