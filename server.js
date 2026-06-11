@@ -1064,8 +1064,8 @@ ${
 </div>
 
         <div class="card">
-          <h2>Business Setup</h2>
-          <p class="subtext">Manage your businesses and auto-reply messages</p>
+          <h2>Setup RingReply</h2>
+          <p class="subtext">Choose a RingReply number and start replying to missed calls automatically</p>
 
           <input type="hidden" id="businessId">
 
@@ -1117,13 +1117,23 @@ ${
     font-size:15px;
   "
 >
-  📞 How to forward missed calls
+  📞 Step 2: Set up missed call forwarding
 </button>
 
 <label>Your Mobile Number</label>
 <input id="ownerMobile" placeholder="+447..." onblur="updateAutoMessage()">
 
-<label>Auto Reply Message</label>
+<label>Automatic Text Message</label>
+
+<p style="
+  color:#64748b;
+  font-size:14px;
+  margin-top:0;
+  margin-bottom:10px;
+">
+  Customers receive this text automatically when you miss a call.
+</p>
+
 <textarea id="autoReplyMessage" placeholder="Hi, sorry we missed your call. This is [Business Name]. Please text us on 07XXXXXXXXX with your job details and we’ll get back to you shortly. You can also reply here if easier."></textarea>
 
           <div class="button-row">
