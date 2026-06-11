@@ -1072,9 +1072,9 @@ ${
           <label>Business Name</label>
           <input id="businessName" placeholder="Business name" onblur="updateAutoMessage()">
 
-          <label>Twilio Number</label>
+          <label>RingReply Number</label>
 <select id="twilioNumber">
-  <option value="">Select a number</option>
+  <option value="">Choose your RingReply number</option>
 
   ${availableNumbers.map(number => `
     <option value="${number.phone_number}">
