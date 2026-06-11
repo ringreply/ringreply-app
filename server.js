@@ -1827,10 +1827,17 @@ app.get('/reset-password', async (req, res) => {
 });
 
 app.post('/add-business', async (req, res) => {
-
   if (!req.session.userId) {
-  return res.status(401).send('Please log in first.');
-}
+    return res.status(401).send('Please log in first.');
+  }
+
+  const existingBusinesses = await getBusinesses(req.session.userId);
+
+  if (existingBusinesses.length >= 1) {
+    return res.status(403).send(
+      'Your current plan includes 1 business. Please contact support to add more businesses.'
+    );
+  }
 
   const { name, twilioNumber, autoReplyMessage, ownerMobile } = req.body;
 
