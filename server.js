@@ -948,7 +948,7 @@ button:hover {
 </div>
 
 ${
-  trialDaysRemaining !== null || currentUser.subscription_status === 'active'
+  trialDaysRemaining !== null || currentUser?.subscription_status === 'active'
     ? `
       <div style="
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
