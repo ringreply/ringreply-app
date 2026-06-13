@@ -1629,22 +1629,21 @@ app.get('/signup-page', (req, res) => {
 
     <script>
       async function signup() {
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
 
-        const res = await fetch('/signup', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ email, password })
-        });
+  const res = await fetch('/signup', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ email, password })
+  });
 
-        const text = await res.text();
-        alert(text);
-
-        if (res.ok) {
-          location.href = '/login-page';
-        }
-      }
+  if (res.ok) {
+    location.href = '/login-page';
+  } else {
+    alert(await res.text());
+  }
+}
     </script>
   `);
 });
