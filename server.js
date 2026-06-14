@@ -197,6 +197,28 @@ async function getContactName(userId, businessId, customerNumber) {
   return data?.customer_name || null;
 }
 
+async function getContactMap(userId) {
+  const { data, error } = await supabase
+    .from('contacts')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    console.error('getContactMap error:', error.message);
+    return {};
+  }
+
+  const map = {};
+
+  (data || []).forEach(contact => {
+    map[
+      contact.customer_number + '_' + contact.business_id
+    ] = contact.customer_name;
+  });
+
+  return map;
+}
+
 async function hasDuplicateNumber(twilioNumber, excludeId = null) {
   const cleanedNumber = cleanNumber(twilioNumber);
 
@@ -234,6 +256,9 @@ app.get('/', async (req, res) => {
 
   const businessIds = businesses.map(b => b.id);
   const messages = await getMessages(businessIds);
+
+  const contactMap = await
+  getContactMap(req.session.userId);
 
   const { data: availableNumbers } = await supabase
   .from('phone_numbers')
@@ -415,14 +440,33 @@ const messageCards = Object.values(conversations)
       (b) => String(b.id) === String(message.business_id)
     );
 
+    const contactName =
+  contactMap[
+    message.customer_number + '_' + message.business_id
+  ];
+
     return `
       <div class="message-card">
         <div class="message-top">
           <div>
             <h3 style="margin:0;">
   ${business ? business.name + ' • ' : ''}
-  ${message.customer_number}
+  ${contactName || message.customer_number}
 </h3>
+
+${
+  contactName
+    ? `
+      <div style="
+        color:#64748b;
+        font-size:13px;
+        margin-top:4px;
+      ">
+        ${message.customer_number}
+      </div>
+    `
+    : ''
+}
             <p class="message-time">
               ${new Date(message.created_at).toLocaleString()}
             </p>
