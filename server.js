@@ -3141,6 +3141,229 @@ app.get('/privacy', (req, res) => {
   `);
 });
 
+app.get('/admin', async (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect('/login-page');
+  }
+
+  const { data: currentUser } = await supabase
+    .from('users')
+    .select('is_admin')
+    .eq('id', req.session.userId)
+    .single();
+
+  if (!currentUser?.is_admin) {
+    return res.status(403).send('Not allowed.');
+  }
+
+  const { data: users } = await supabase
+    .from('users')
+    .select('id, email, subscription_status, trial_ends_at, created_at')
+    .order('created_at', { ascending: false });
+
+  const { data: businesses } = await supabase
+    .from('businesses')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  const { data: numbers } = await supabase
+    .from('phone_numbers')
+    .select('*')
+    .order('phone_number', { ascending: true });
+
+  res.send(`
+    <html>
+      <head>
+        <title>RingReply Admin</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            padding: 20px;
+          }
+          .container {
+            max-width: 1100px;
+            margin: 0 auto;
+          }
+          .card {
+            background: white;
+            border-radius: 18px;
+            padding: 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+            overflow-x: auto;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+          }
+          th, td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+          }
+          th {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+          }
+          button {
+            padding: 9px 12px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+          }
+          .danger {
+            background: #dc2626;
+          }
+          .muted {
+            color: #64748b;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>RingReply Admin</h1>
+          <p class="muted">Internal admin tools</p>
+
+          <div class="card">
+            <h2>Users</h2>
+            <table>
+              <tr>
+                <th>Email</th>
+                <th>Status</th>
+                <th>Trial Ends</th>
+                <th>Created</th>
+              </tr>
+              ${(users || []).map(user => `
+                <tr>
+                  <td>${user.email}</td>
+                  <td>${user.subscription_status || ''}</td>
+                  <td>${user.trial_ends_at ? new Date(user.trial_ends_at).toLocaleDateString() : '-'}</td>
+                  <td>${user.created_at ? new Date(user.created_at).toLocaleDateString() : '-'}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>Businesses</h2>
+            <table>
+              <tr>
+                <th>Name</th>
+                <th>RingReply Number</th>
+                <th>Owner Mobile</th>
+                <th>User ID</th>
+              </tr>
+              ${(businesses || []).map(business => `
+                <tr>
+                  <td>${business.name}</td>
+                  <td>${business.twilio_number}</td>
+                  <td>${business.owner_mobile || '-'}</td>
+                  <td>${business.user_id}</td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+
+          <div class="card">
+            <h2>Phone Numbers</h2>
+            <table>
+              <tr>
+                <th>Number</th>
+                <th>Assigned</th>
+                <th>Business ID</th>
+                <th>Action</th>
+              </tr>
+              ${(numbers || []).map(number => `
+                <tr>
+                  <td>${number.phone_number}</td>
+                  <td>${number.assigned ? 'Yes' : 'No'}</td>
+                  <td>${number.assigned_business_id || '-'}</td>
+                  <td>
+                    ${
+                      number.assigned
+                        ? `<button class="danger" onclick="releaseNumber('${number.phone_number}')">Release</button>`
+                        : '-'
+                    }
+                  </td>
+                </tr>
+              `).join('')}
+            </table>
+          </div>
+        </div>
+
+        <script>
+          async function releaseNumber(phoneNumber) {
+            if (!confirm('Release this number back into the pool?')) return;
+
+            const res = await fetch('/admin/release-number', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ phoneNumber })
+            });
+
+            alert(await res.text());
+
+            if (res.ok) {
+              location.reload();
+            }
+          }
+        </script>
+      </body>
+    </html>
+  `);
+});
+
+app.post('/admin/release-number', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in first.');
+  }
+
+  const { data: currentUser } = await supabase
+    .from('users')
+    .select('is_admin')
+    .eq('id', req.session.userId)
+    .single();
+
+  if (!currentUser?.is_admin) {
+    return res.status(403).send('Not allowed.');
+  }
+
+  const { phoneNumber } = req.body;
+
+  if (!phoneNumber) {
+    return res.status(400).send('Missing phone number.');
+  }
+
+  await supabase
+    .from('businesses')
+    .update({ twilio_number: null })
+    .eq('twilio_number', phoneNumber);
+
+  const { error } = await supabase
+    .from('phone_numbers')
+    .update({
+      assigned: false,
+      assigned_user_id: null,
+      assigned_business_id: null
+    })
+    .eq('phone_number', phoneNumber);
+
+  if (error) {
+    return res.status(500).send('Failed to release number.');
+  }
+
+  res.send('Number released.');
+});
+
 app.get('/landing', (req, res) => {
   res.send(`
     <html>
