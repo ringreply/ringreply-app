@@ -185,6 +185,18 @@ async function getBusinessByTwilioNumber(twilioNumber) {
   return normaliseBusiness(data[0]);
 }
 
+async function getContactName(userId, businessId, customerNumber) {
+  const { data } = await supabase
+    .from('contacts')
+    .select('customer_name')
+    .eq('user_id', userId)
+    .eq('business_id', businessId)
+    .eq('customer_number', customerNumber)
+    .single();
+
+  return data?.customer_name || null;
+}
+
 async function hasDuplicateNumber(twilioNumber, excludeId = null) {
   const cleanedNumber = cleanNumber(twilioNumber);
 
@@ -2039,6 +2051,51 @@ app.post('/sms', validateTwilioRequest, async (req, res) => {
   res.send(twiml.toString());
 });
 
+app.post('/save-contact', async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).send('Please log in first.');
+  }
+
+  const { businessId, customerNumber, customerName } = req.body;
+
+  if (!businessId || !customerNumber || !customerName) {
+    return res.status(400).send('Missing contact details.');
+  }
+
+  const { data: ownedBusiness } = await supabase
+    .from('businesses')
+    .select('id')
+    .eq('id', businessId)
+    .eq('user_id', req.session.userId)
+    .single();
+
+  if (!ownedBusiness) {
+    return res.status(403).send('Not allowed.');
+  }
+
+  await supabase
+    .from('contacts')
+    .delete()
+    .eq('user_id', req.session.userId)
+    .eq('business_id', businessId)
+    .eq('customer_number', customerNumber);
+
+  const { error } = await supabase.from('contacts').insert([
+    {
+      user_id: req.session.userId,
+      business_id: businessId,
+      customer_number: customerNumber,
+      customer_name: customerName.trim()
+    }
+  ]);
+
+  if (error) {
+    return res.status(500).send('Failed to save contact.');
+  }
+
+  res.send('Contact saved');
+});
+
 app.post('/send-reply', async (req, res) => {
   if (!req.session.userId) {
     return res.status(401).send('Please log in first.');
@@ -2158,6 +2215,12 @@ if (ownedBusinessError || !ownedBusiness) {
   </div>
 `;
 }).join('');
+
+const savedContactName = await getContactName(
+  req.session.userId,
+  business,
+  customer
+);
 
   const twilioNumber = data && data[0] ? data[0].twilio_number : '';
 
@@ -2299,7 +2362,23 @@ if (ownedBusinessError || !ownedBusiness) {
 
         <div class="chat-page">
   <a class="back-link" href="/">← Back to inbox</a>
-  <h2>Conversation with ${customer}</h2>
+  <h2>
+  Conversation with ${savedContactName || customer}
+</h2>
+
+${savedContactName ? `
+  <p style="color:#64748b;">
+    ${customer}
+  </p>
+` : ''}
+
+<button
+  type="button"
+  onclick="saveContactName()"
+  style="margin-bottom:16px;"
+>
+  Add Customer Name
+</button>
 
 <div
   id="newMessageBanner"
@@ -2379,6 +2458,30 @@ setInterval(refreshConversation, 10000);
     // later we can replace this with AJAX live updates
   }
 }, 30000);
+
+async function saveContactName() {
+  const name = prompt('Enter customer name');
+
+  if (!name) return;
+
+  const res = await fetch('/save-contact', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      businessId: '${business}',
+      customerNumber: '${customer}',
+      customerName: name
+    })
+  });
+
+  alert(await res.text());
+
+  if (res.ok) {
+    location.reload();
+  }
+}
 
           async function sendReply() {
   const replyBox = document.getElementById('reply');
